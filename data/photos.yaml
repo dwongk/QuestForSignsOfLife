@@ -3,7 +3,7 @@
 
 photos:
   - id: fulcrum-i-sculpture
-    title: "\"Fulcrum I\" Sculpture"
+    title: '"Fulcrum I" Sculpture'
     category: "Public Art & Sculptures"
     location: "3913 Savannah Square St NW, Suwanee, GA 30024"
     maps_url: "https://www.google.com/maps/search/?api=1&query=%22Fulcrum%20I%22%20Sculpture%203913%20Savannah%20Square%20St%20NW%2C%20Suwanee%2C%20GA%2030024"
@@ -12,7 +12,7 @@ photos:
     related: []
 
   - id: fulcrum-i-sculpture-2
-    title: "\"Fulcrum I\" Sculpture"
+    title: '"Fulcrum I" Sculpture'
     category: "Public Art & Sculptures"
     location: "3913 Savannah Square St NW, Suwanee, GA 30024"
     maps_url: "https://www.google.com/maps/search/?api=1&query=%22Fulcrum%20I%22%20Sculpture%203913%20Savannah%20Square%20St%20NW%2C%20Suwanee%2C%20GA%2030024"
@@ -22,7 +22,7 @@ photos:
 
   - id: hammer-nails-suwanee
     title: "Hammer & Nails Suwanee"
-    category: "Public Art & Sculptures"
+    category: "Travel Discoveries"
     location: "Near 340, Town Center Ave A10, Suwanee, GA 30024"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Hammer%20%26%20Nails%20Suwanee%20Near%20340%2C%20Town%20Center%20Ave%20A10%2C%20Suwanee%2C%20GA%2030024"
     image_path: "https://lh3.googleusercontent.com/gps-cs/AAjk-CMjZ8JPD0qA6g0vp4OiiWoOI3Bawlb7DH0i2UN3Lx-vzVD4D3mVbzqg5lt4mz6n6WIW1T0OYktq0cKFC_Tt3FblMCxm6doD3w8XoTFPCIm7uFyWmOtdTM2A-haPl2UPxg0joqxUcpsZcV_9=s1600"
@@ -30,7 +30,7 @@ photos:
     related: []
 
   - id: friends-sculpture
-    title: "\"Friends\" Sculpture"
+    title: '"Friends" Sculpture'
     category: "Public Art & Sculptures"
     location: "330 Town Center Ave, Suwanee, GA 30024"
     maps_url: "https://www.google.com/maps/search/?api=1&query=%22Friends%22%20Sculpture%20330%20Town%20Center%20Ave%2C%20Suwanee%2C%20GA%2030024"
@@ -39,7 +39,7 @@ photos:
     related: []
 
   - id: friends-sculpture-2
-    title: "\"Friends\" Sculpture"
+    title: '"Friends" Sculpture'
     category: "Public Art & Sculptures"
     location: "330 Town Center Ave, Suwanee, GA 30024"
     maps_url: "https://www.google.com/maps/search/?api=1&query=%22Friends%22%20Sculpture%20330%20Town%20Center%20Ave%2C%20Suwanee%2C%20GA%2030024"
@@ -49,7 +49,7 @@ photos:
 
   - id: peachtree-dentures-and-implants
     title: "Peachtree Dentures and Implants"
-    category: "Public Art & Sculptures"
+    category: "Travel Discoveries"
     location: "5901 Peachtree Dunwoody Rd NE Building B Ste 250, Atlanta, GA 30328"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Peachtree%20Dentures%20and%20Implants%205901%20Peachtree%20Dunwoody%20Rd%20NE%20Building%20B%20Ste%20250%2C%20Atlanta%2C%20GA%2030328"
     image_path: "https://lh3.googleusercontent.com/gps-cs/AAjk-CNvNzcjSTLCnE76BUQ9yUJ7GzL4pWwaxLewKclf2F5-UrS4A2SWdZ6069Ts0scK_STKCZcZEg2oEhx26m8mAub_0e0DsEqL64bnNpzw6uIyr_M50hdHynhUsMbtO6FhA3X-5romMRrcvFfw=s1600"
@@ -57,7 +57,7 @@ photos:
     related: []
 
   - id: friends-sculpture-3
-    title: "\"Friends\" Sculpture"
+    title: '"Friends" Sculpture'
     category: "Public Art & Sculptures"
     location: "330 Town Center Ave, Suwanee, GA 30024"
     maps_url: "https://www.google.com/maps/search/?api=1&query=%22Friends%22%20Sculpture%20330%20Town%20Center%20Ave%2C%20Suwanee%2C%20GA%2030024"
@@ -67,7 +67,7 @@ photos:
 
   - id: suwanee-city-hall
     title: "Suwanee City Hall"
-    category: "Public Art & Sculptures"
+    category: "Travel Discoveries"
     location: "330 Town Center Ave, Suwanee, GA 30024"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Suwanee%20City%20Hall%20330%20Town%20Center%20Ave%2C%20Suwanee%2C%20GA%2030024"
     image_path: "https://lh3.googleusercontent.com/gps-cs/AAjk-CP6AwwALE9U9UxjfLQis_iD1plHlrMDRB5EnMbO5y8jUXQZNR59cK1FhC869THk90TTks6bxITlHA8iOVcI9fkicvbV1Lqss08Crg62Pm2fJDPqtZnO-HEGwIWv-MaN7Ih97PLvdWmTN3O2=s1600"
@@ -76,7 +76,7 @@ photos:
 
   - id: suwanee-city-hall-2
     title: "Suwanee City Hall"
-    category: "Public Art & Sculptures"
+    category: "Travel Discoveries"
     location: "330 Town Center Ave, Suwanee, GA 30024"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Suwanee%20City%20Hall%20330%20Town%20Center%20Ave%2C%20Suwanee%2C%20GA%2030024"
     image_path: "https://lh3.googleusercontent.com/gps-cs/AAjk-CPmdmVfYyThDWozUYnGB7EWTGvueivXzJ7Zl9KDcxgdp0LyPemRkZ2TDw2qgaReLxuhc-4f-J5Uaj_EWWisHIxb44N_44ZFnBzEwfBQYHjeMnmvNJV_2D9Gd8fjNtg5jECDHXSakOuemnMT=s1600"
@@ -85,7 +85,7 @@ photos:
 
   - id: gwinnett-dental-studio---dr-titus-wongk
     title: "Gwinnett Dental Studio - Dr Titus Wongk"
-    category: "Public Art & Sculptures"
+    category: "Travel Discoveries"
     location: "530 Highland Station Dr Ste 1006, Suwanee, GA 30024"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Gwinnett%20Dental%20Studio%20-%20Dr%20Titus%20Wongk%20530%20Highland%20Station%20Dr%20Ste%201006%2C%20Suwanee%2C%20GA%2030024"
     image_path: "https://lh3.googleusercontent.com/gps-cs/AAjk-CP9B-VBb9Gto3YNHYB4Z7X_9h1XqsOgfOMI_YLf2zV1aw_0RY_9RGkFcIXpUDZZDODA8KXPh-7yHWoe-8ryrFp4Jlbzx6z3ZPDIX6p9WWLkGib2U0dDQKcz8V_8S1qc9sfkcHH5tzm_ghTK=s1600"
@@ -103,7 +103,7 @@ photos:
 
   - id: gwinnett-dental-studio---dr-titus-wongk-2
     title: "Gwinnett Dental Studio - Dr Titus Wongk"
-    category: "Public Art & Sculptures"
+    category: "Travel Discoveries"
     location: "530 Highland Station Dr Ste 1006, Suwanee, GA 30024"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Gwinnett%20Dental%20Studio%20-%20Dr%20Titus%20Wongk%20530%20Highland%20Station%20Dr%20Ste%201006%2C%20Suwanee%2C%20GA%2030024"
     image_path: "https://lh3.googleusercontent.com/gps-cs/AAjk-CN3ERFANw-KiMpd-KqmU1566knoIc3tY7KsjrOXFUQQpkJJ56NJHt4a0yptjAML5EyjcEhTPJ-1yLpoRZzLVJFgiS--Mv3gsBUVJTEdJ6YOtRng6hs76QsHH5pR2jxt-VlfjE-EgiKWGncx=s1600"
@@ -112,7 +112,7 @@ photos:
 
   - id: gwinnett-dental-studio---dr-titus-wongk-3
     title: "Gwinnett Dental Studio - Dr Titus Wongk"
-    category: "Public Art & Sculptures"
+    category: "Travel Discoveries"
     location: "530 Highland Station Dr Ste 1006, Suwanee, GA 30024"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Gwinnett%20Dental%20Studio%20-%20Dr%20Titus%20Wongk%20530%20Highland%20Station%20Dr%20Ste%201006%2C%20Suwanee%2C%20GA%2030024"
     image_path: "https://lh3.googleusercontent.com/gps-cs/AAjk-CPPyxXRRXoTrVT6aRfAcX2nzIBVCpo-tcVp_hxc289vZ7EJjEG9d9T5fpEBQuQZku0x7xUBklRtFckXPCIuWyIzrIOEgPhVe81IDDs2y-_53yqFSApxSdVJ3n9wT54CcCu_GKIoio1INg1m=s1600"
@@ -174,7 +174,7 @@ photos:
     related: []
 
   - id: letras-i-love-sevilla
-    title: "Letras \"I Love Sevilla\""
+    title: 'Letras "I Love Sevilla"'
     category: "Signs and Wonders"
     location: "Pl. de la Encarnaci\u00f3n, Casco Antiguo, 41003 Sevilla, Spain"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Letras%20%22I%20Love%20Sevilla%22%20Pl.%20de%20la%20Encarnaci%C3%B3n%2C%20Casco%20Antiguo%2C%2041003%20Sevilla%2C%20Spain"
@@ -183,7 +183,7 @@ photos:
     related: []
 
   - id: faro-sign
-    title: "\"FARO\" Sign"
+    title: '"FARO" Sign'
     category: "Signs and Wonders"
     location: "Pra\u00e7a Dom Francisco Gomes 5, 8000-168 Faro, Portugal"
     maps_url: "https://www.google.com/maps/search/?api=1&query=%22FARO%22%20Sign%20Pra%C3%A7a%20Dom%20Francisco%20Gomes%205%2C%208000-168%20Faro%2C%20Portugal"
@@ -193,7 +193,7 @@ photos:
 
   - id: martin-luther-king-jr-park
     title: "Martin Luther King, Jr. Park"
-    category: "Travel Discoveries"
+    category: "Signs and Wonders"
     location: "Woodland Ave &, Dr. Martin Luther King Jr. Blvd, Kansas City, MO 64130"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Martin%20Luther%20King%2C%20Jr.%20Park%20Woodland%20Ave%20%26%2C%20Dr.%20Martin%20Luther%20King%20Jr.%20Blvd%2C%20Kansas%20City%2C%20MO%2064130"
     image_path: "https://lh3.googleusercontent.com/gps-cs/AAjk-CNfPAG-39oysGgF7PU0V-uF9JFF3dv7iNLEEoTH-EqME5Cd_Vf_lL59713Ko1dKuWVmF2GedskBgH6OEHTytwG1LDy55NFlEa-_PtNI3qPKdJsCVr2K6s0bRpBwKFDSC-bSL_ok=s1600"
@@ -247,7 +247,7 @@ photos:
 
   - id: alejo-beni-park
     title: "Alejo Beni Park"
-    category: "Travel Discoveries"
+    category: "Signs and Wonders"
     location: "XQ8J+68M, Sharp St, Dangriga, Belize"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Alejo%20Beni%20Park%20XQ8J%2B68M%2C%20Sharp%20St%2C%20Dangriga%2C%20Belize"
     image_path: "https://lh3.googleusercontent.com/gps-cs/AAjk-CM6VmWodZDTbjZ3J4Vxfig8e0VvResHUjko6q3QYiSBU9D_IGvBWDSwggEGw0byObu0OrVmt0Ue91mv19CkbfWnaE_Mc5FRvK7v5Dz6G7076PLrI5lrNyGc1r0Q5yq3JpLEG8g=s1600"

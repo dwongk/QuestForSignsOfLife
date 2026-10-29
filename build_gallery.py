@@ -52,7 +52,9 @@ def parse_yaml_subset(text: str) -> list[dict]:
 
     def clean_val(v: str):
         v = v.strip()
-        if (v.startswith('"') and v.endswith('"')) or (v.startswith("'") and v.endswith("'")):
+        if v.startswith('"') and v.endswith('"'):
+            return v[1:-1].replace('\\"', '"')
+        if v.startswith("'") and v.endswith("'"):
             return v[1:-1]
         return v
 
@@ -180,7 +182,12 @@ def normalize_photo(photo: dict, root: Path) -> dict:
     if not pid:
         pid = slugify(title)
 
-    category = str(photo.get("category") or "Uncategorized").strip()
+    category = str(photo.get("category") or "").strip()
+    place_type = str(photo.get("place_type") or "").strip()
+    if place_type:
+        category = category_from_place_type(place_type)
+    elif not category:
+        category = "Travel Discoveries"
     location = str(photo.get("location") or "").strip()
     maps_url = str(photo.get("maps_url") or "").strip()
     image_path = str(photo.get("image_path") or "").strip()
@@ -213,6 +220,31 @@ def normalize_photo(photo: dict, root: Path) -> dict:
         "caption": caption,
         "related": related,
     }
+
+
+def location_sort_key(location: str) -> str:
+    """Extract zip/postal + city/state-country as a stable sort key."""
+    parts = [p.strip() for p in location.split(',')]
+    last = parts[-1] if parts else location
+    second_last = parts[-2] if len(parts) >= 2 else ''
+    # Search only the last two segments (avoids confusing building numbers with zip codes)
+    last_two = ', '.join(parts[-2:]) if len(parts) >= 2 else location
+    zip_matches = list(re.finditer(r'(?<!\d)(\d{4,5}(?:-\d{3,4})?)(?!\d)', last_two))
+    postal = zip_matches[-1].group(1) if zip_matches else ''
+    return f"{last}|{postal}|{second_last}".lower()
+
+
+_SCULPTURE_TYPES = {"sculpture", "monument", "historical landmark", "mural", "memorial"}
+_TOURIST_TYPES = {"tourist attraction", "point of interest"}
+
+
+def category_from_place_type(place_type: str) -> str:
+    pt = (place_type or "").lower()
+    if any(t in pt for t in _SCULPTURE_TYPES):
+        return "Public Art & Sculptures"
+    if any(t in pt for t in _TOURIST_TYPES):
+        return "Signs and Wonders"
+    return "Travel Discoveries"
 
 
 def main():
@@ -270,11 +302,18 @@ def main():
             data_loc = esc(photo["location"].lower())
             data_title = esc(photo["title"].lower())
             data_order = photo["_order"]
+            loc_sort = esc(location_sort_key(photo["location"]))
+            img_tag = f'<img src="{esc(photo["image_path"])}" alt="{esc(photo["title"])}" loading="lazy">'
+            img_html = (
+                f'<a href="{esc(url)}" target="_blank" rel="noopener noreferrer">{img_tag}</a>'
+                if url else img_tag
+            )
 
             cards.append(
                 f'<article class="card" id="{esc(photo["id"])}" '
-                f'data-title="{data_title}" data-location="{data_loc}" data-order="{data_order}">\n'
-                f'  <img src="{esc(photo["image_path"])}" alt="{esc(photo["title"])}" loading="lazy">\n'
+                f'data-title="{data_title}" data-location="{data_loc}" '
+                f'data-location-sort="{loc_sort}" data-order="{data_order}">\n'
+                f'  {img_html}\n'
                 f'  <div class="card-body">\n'
                 f'    <h3>{esc(photo["title"])}</h3>\n'
                 f'    {loc_html}\n'
@@ -302,18 +341,19 @@ def main():
 (function () {
   const select = document.getElementById('sort-select');
   if (!select) return;
-  select.addEventListener('change', function () {
-    const mode = this.value;
+  function applySort(mode) {
     document.querySelectorAll('.collection .grid').forEach(function (grid) {
       const cards = Array.from(grid.querySelectorAll('.card'));
       cards.sort(function (a, b) {
         if (mode === 'title')    return a.dataset.title.localeCompare(b.dataset.title);
-        if (mode === 'location') return a.dataset.location.localeCompare(b.dataset.location);
+        if (mode === 'location') return a.dataset.locationSort.localeCompare(b.dataset.locationSort);
         return parseInt(a.dataset.order) - parseInt(b.dataset.order); // date (original order)
       });
       cards.forEach(function (c) { grid.appendChild(c); });
     });
-  });
+  }
+  select.addEventListener('change', function () { applySort(this.value); });
+  applySort(select.value);
 }());
 </script>"""
 
@@ -340,9 +380,9 @@ def main():
 <div class="sort-bar">
   <label for="sort-select">Sort by:</label>
   <select id="sort-select">
-    <option value="date">Date Added</option>
+    <option value="location" selected>Location (Zip/Region)</option>
     <option value="title">Title (A–Z)</option>
-    <option value="location">Location (A–Z)</option>
+    <option value="date">Date Added</option>
   </select>
 </div>
 <nav class="collection-nav" aria-label="Photo collections">{nav}</nav>
