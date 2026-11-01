@@ -16,207 +16,45 @@
   code { padding: 2px 6px; }
   pre { padding: 16px; overflow-x: auto; border: 1px solid #e2e8e5; }
   ol li { margin-bottom: 16px; }
+  ul li { margin-bottom: 6px; }
   .tip { border-left: 4px solid var(--accent); padding-left: 14px; color: var(--muted); margin: 16px 0; }
   .badge { display: inline-block; background: #e0f2fe; color: #0369a1; padding: 3px 8px; border-radius: 999px; font-size: 0.82rem; font-weight: 600; }
-  .copy-btn { float: right; background: #e2e8e5; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
-  .copy-btn:hover { background: #cbd5e1; }
 </style>
 </head>
 <body>
 
-<h1>Google Maps Photo Harvester <span class="badge">v4.0 Smart-Sync</span></h1>
-<p class="tagline">Extracts your contribution photos with <strong>exact place titles &amp; locations</strong>, and synchronizes with your catalog without duplicating entries.</p>
+<h1>Google Maps Photo Harvester <span class="badge">v7.0</span></h1>
+<p class="tagline">One click harvests your contribution photos <strong>and review captions</strong>, then syncs with your catalog.</p>
 
 <div class="card">
-  <h2>Method 1: One-Click Bookmarklet</h2>
+  <h2>How to Use</h2>
   <ol>
     <li>
-      <strong>Drag this button to your browser's Bookmarks bar:</strong><br><br>
-      <a class="btn-bookmarklet" href="javascript:(async()=>{console.log('%c[Harvester v4] Starting extraction...','color:#135e58;font-weight:bold;');if(!location.href.includes('/photos')){const pt=Array.from(document.querySelectorAll('button,[role=tab],a')).find(t=>(t.textContent||'').trim().toLowerCase()==='photos');if(pt){pt.click();await new Promise(r=>setTimeout(r,2000));}}let sp=null;for(const d of document.querySelectorAll('div')){const s=window.getComputedStyle(d);if((s.overflowY==='auto'||s.overflowY==='scroll')&&d.scrollHeight>d.clientHeight+50){if((d.textContent||'').includes('Date')||(d.textContent||'').includes('37')){sp=d;break;}}}sp=sp||document.querySelector('div[role=main]')||document.body;let lh=0;for(let i=0;i<15;i++){sp.scrollTop=sp.scrollHeight;await new Promise(r=>setTimeout(r,500));if(sp.scrollHeight===lh&&i>4)break;lh=sp.scrollHeight;}const clean=r=>{if(!r)return null;const m=r.match(/https?:\/\/[^&#34;'\)\s]+/);if(!m)return null;const u=m[0];if(/(\/a\/|\/ogw\/|default-user|avatar)/i.test(u))return null;if(/(googleusercontent\.com|ggpht\.com|googleapis\.com)/i.test(u)){if(/(\/p\/|gps-proxy|gps-cs|grass-cs|=w|=s|=h)/i.test(u)){return u.split('=')[0]+'=s1600';}}return null;};const seen=new Set();const cand=Array.from(sp.querySelectorAll('img,[style*=&quot;url(&quot;],div[role=img]'));const pes=[];for(const el of cand){const rect=el.getBoundingClientRect();if(rect.width>0&&rect.width<65)continue;let raw=el.tagName==='IMG'?(el.currentSrc||el.src||el.getAttribute('data-src')):(el.getAttribute('style')||window.getComputedStyle(el).backgroundImage);const high=clean(raw);if(!high||seen.has(high)||high.includes('/a-/'))continue;seen.add(high);pes.push({el,url:high});}const items=[];for(const{el,url}of pes){let curr=el,card=el;while(curr&&curr.parentElement&&curr.parentElement!==sp&&curr.parentElement!==document.body){const p=curr.parentElement;const txt=(p.textContent||'').trim();if(txt.includes('Local Guide')||txt.includes('Edit profile')||txt.length>280)break;card=p;curr=p;}let ael=card.querySelector('[class*=&quot;fontBody&quot;],[class*=&quot;address&quot;],[class*=&quot;caption&quot;]');let loc=(ael?.textContent||'').trim();let title='';if(ael&&ael.previousElementSibling){title=(ael.previousElementSibling.textContent||'').trim();}if((!title||title.length>60)&&ael&&ael.parentElement){const ptxt=(ael.parentElement.textContent||'').trim();if(loc&&ptxt.includes(loc)){title=ptxt.replace(loc,'').trim();}}if(!title||title.includes('Local Guide')||title.length>60){let prev=card;while(prev){prev=prev.previousElementSibling||prev.parentElement;if(!prev||prev===sp||prev===document.body)break;const prevAel=prev.querySelector?.('[class*=&quot;fontBody&quot;],[class*=&quot;address&quot;]');if(prevAel){if(!loc)loc=(prevAel.textContent||'').trim();if(prevAel.previousElementSibling){title=(prevAel.previousElementSibling.textContent||'').trim();}else if(prevAel.parentElement){title=(prevAel.parentElement.textContent||'').replace(prevAel.textContent||'','').trim();}}if(!title){const ct=prev.querySelector?.('[class*=&quot;fontHeadline&quot;],[class*=&quot;title&quot;],h1,h2,h3')?.textContent?.trim();if(ct&&!ct.includes('Local Guide')&&ct.length<60)title=ct;}if(title&&!title.includes('Local Guide')&&title.length<60)break;}}title=title.replace(/^/,'').replace(/.*/,'').replace(/.*/,'').replace(/\s+/g,' ').trim();loc=loc.replace(/^/,'').replace(/.*/,'').replace(/.*/,'').replace(/\s+/g,' ').trim();if(!title||title.includes('Local Guide')||title.length>60){title='Photo Discovery';}const cat=/(spain|belize|portugal|madrid|faro|sevilla|church|park|mexicana)/i.test(title+' '+loc)?'Travel Discoveries':'Public Art & Sculptures';const mapUrl=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(title+(loc?' '+loc:''))}`;items.push({title,location:loc,image_url:url,maps_url:mapUrl,category:cat});}const finalItems=items.slice(0,37);console.log(`[Harvester] Extracted ${finalItems.length} photos!`);const blob=new Blob([JSON.stringify(finalItems,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='maps_contributions.json';document.body.appendChild(a);a.click();document.body.removeChild(a);})();">📸 Harvest Maps Photos (v4.0)</a>
+      <strong>Drag this button to your browser&rsquo;s bookmarks bar:</strong><br><br>
+      <a class="btn-bookmarklet" href="javascript:(async()=&gt;{console.log(&#x27;%c[Harvester v7.0] Photos + Reviews...&#x27;,&#x27;color:#135e58;font-weight:bold;&#x27;);if(!location.href.includes(&#x27;/photos&#x27;)){const pt=Array.from(document.querySelectorAll(&#x27;button,[role=tab],a&#x27;)).find(t=&gt;(t.textContent||&#x27;&#x27;).trim().toLowerCase()===&#x27;photos&#x27;);if(pt){pt.click();await new Promise(r=&gt;setTimeout(r,2000));}}let sp=null;for(const d of document.querySelectorAll(&#x27;div&#x27;)){const s=window.getComputedStyle(d);if((s.overflowY===&#x27;auto&#x27;||s.overflowY===&#x27;scroll&#x27;)&amp;&amp;d.scrollHeight&gt;d.clientHeight+50){if((d.textContent||&#x27;&#x27;).includes(&#x27;Date&#x27;)){sp=d;break;}}}sp=sp||document.querySelector(&#x27;div[role=main]&#x27;)||document.body;let lh=0;for(let i=0;i&lt;15;i++){sp.scrollTop=sp.scrollHeight;await new Promise(r=&gt;setTimeout(r,500));if(sp.scrollHeight===lh&amp;&amp;i&gt;4)break;lh=sp.scrollHeight;}const clean=raw=&gt;{if(!raw)return null;const m=raw.match(/https?:\/\/[^&quot;&#x27;\)\s]+/);if(!m)return null;const u=m[0];if(/(\/a\/|\/ogw\/|default-user|avatar)/i.test(u))return null;if(/(googleusercontent\.com|ggpht\.com|googleapis\.com)/i.test(u)){if(/(\/p\/|gps-proxy|gps-cs|grass-cs|=w|=s|=h)/i.test(u)){return u.split(&#x27;=&#x27;)[0]+&#x27;=s1600&#x27;;}}return null;};const seen=new Set();const cand=Array.from(sp.querySelectorAll(&#x27;img,[style*=&quot;url(&quot;],div[role=img]&#x27;));const pes=[];for(const el of cand){const rect=el.getBoundingClientRect();if(rect.width&gt;0&amp;&amp;rect.width&lt;65)continue;let raw=el.tagName===&#x27;IMG&#x27;?(el.currentSrc||el.src||el.getAttribute(&#x27;data-src&#x27;)):(el.getAttribute(&#x27;style&#x27;)||window.getComputedStyle(el).backgroundImage);const high=clean(raw);if(!high||seen.has(high)||high.includes(&#x27;/a-/&#x27;))continue;seen.add(high);pes.push({el,url:high});}const items=[];for(const{el,url}of pes){let curr=el,card=el;while(curr&amp;&amp;curr.parentElement&amp;&amp;curr.parentElement!==sp&amp;&amp;curr.parentElement!==document.body){const p=curr.parentElement;const txt=(p.textContent||&#x27;&#x27;).trim();if(txt.includes(&#x27;Local Guide&#x27;)||txt.includes(&#x27;Edit profile&#x27;)||txt.length&gt;280)break;card=p;curr=p;}let ael=card.querySelector(&#x27;[class*=&quot;fontBody&quot;],[class*=&quot;address&quot;],[class*=&quot;caption&quot;]&#x27;);let loc=(ael?.textContent||&#x27;&#x27;).trim();let title=&#x27;&#x27;;if(ael&amp;&amp;ael.previousElementSibling)title=(ael.previousElementSibling.textContent||&#x27;&#x27;).trim();if((!title||title.length&gt;60)&amp;&amp;ael&amp;&amp;ael.parentElement){const ptxt=(ael.parentElement.textContent||&#x27;&#x27;).trim();if(loc&amp;&amp;ptxt.includes(loc))title=ptxt.replace(loc,&#x27;&#x27;).trim();}if(!title||title.includes(&#x27;Local Guide&#x27;)||title.length&gt;60){let prev=card;while(prev){prev=prev.previousElementSibling||prev.parentElement;if(!prev||prev===sp||prev===document.body)break;const prevAel=prev.querySelector?.(&#x27;[class*=&quot;fontBody&quot;],[class*=&quot;address&quot;]&#x27;);if(prevAel){if(!loc)loc=(prevAel.textContent||&#x27;&#x27;).trim();if(prevAel.previousElementSibling)title=(prevAel.previousElementSibling.textContent||&#x27;&#x27;).trim();else if(prevAel.parentElement)title=(prevAel.parentElement.textContent||&#x27;&#x27;).replace(prevAel.textContent||&#x27;&#x27;,&#x27;&#x27;).trim();}if(!title){const ct=prev.querySelector?.(&#x27;[class*=&quot;fontHeadline&quot;],[class*=&quot;title&quot;],h1,h2,h3&#x27;)?.textContent?.trim();if(ct&amp;&amp;!ct.includes(&#x27;Local Guide&#x27;)&amp;&amp;ct.length&lt;60)title=ct;}if(title&amp;&amp;!title.includes(&#x27;Local Guide&#x27;)&amp;&amp;title.length&lt;60)break;}}title=title.replace(/\s+/g,&#x27; &#x27;).trim();loc=loc.replace(/\s+/g,&#x27; &#x27;).trim();if(!title||title.includes(&#x27;Local Guide&#x27;)||title.length&gt;60)title=&#x27;Photo Discovery&#x27;;const cat=/(sign|letras|i love|faro)/i.test(title)?&#x27;Signs and Wonders&#x27;:/(sculpture|statue|monument|memorial|mural|obra)/i.test(title)?&#x27;Public Art &amp; Sculptures&#x27;:&#x27;Travel Discoveries&#x27;;const mapUrl=`https://www.google.com/maps/search/?api=1&amp;query=${encodeURIComponent(title+(loc?&#x27; &#x27;+loc:&#x27;&#x27;))}`;items.push({title,location:loc,caption:&#x27;&#x27;,image_url:url,maps_url:mapUrl,category:cat});}console.log(`[Harvester] ${items.length} photos. Switching to Reviews...`);const rt=Array.from(document.querySelectorAll(&#x27;button,[role=tab],a&#x27;)).find(t=&gt;(t.textContent||&#x27;&#x27;).trim().toLowerCase()===&#x27;reviews&#x27;);if(rt){rt.click();await new Promise(r=&gt;setTimeout(r,2500));}let rsp=null;for(const d of document.querySelectorAll(&#x27;div&#x27;)){const s=window.getComputedStyle(d);if((s.overflowY===&#x27;auto&#x27;||s.overflowY===&#x27;scroll&#x27;)&amp;&amp;d.scrollHeight&gt;d.clientHeight+50){rsp=d;break;}}rsp=rsp||document.querySelector(&#x27;div[role=main]&#x27;)||document.body;let lhr=0;for(let i=0;i&lt;30;i++){rsp.scrollTop=rsp.scrollHeight;await new Promise(r=&gt;setTimeout(r,800));if(rsp.scrollHeight===lhr&amp;&amp;i&gt;5)break;lhr=rsp.scrollHeight;}const reviews=[];const ratingEls=Array.from(document.querySelectorAll(&#x27;[aria-label*=&quot;star&quot; i],[aria-label*=&quot;Rated&quot; i],[role=img][aria-label*=&quot;out of&quot;]&#x27;));const seenRev=new Set();for(const ratingEl of ratingEls){let card=ratingEl;for(let i=0;i&lt;8;i++){if(!card.parentElement||card.parentElement===rsp||card.parentElement===document.body)break;card=card.parentElement;if((card.textContent||&#x27;&#x27;).trim().length&gt;100)break;}const nameEl=card.querySelector(&#x27;a[href*=&quot;maps.google&quot;],a[href*=&quot;google.com/maps&quot;],[class*=&quot;fontHeadline&quot;],[class*=&quot;fontTitle&quot;],h2,h3&#x27;);const name=(nameEl?.textContent||&#x27;&#x27;).trim().slice(0,80);if(!name||seenRev.has(name))continue;seenRev.add(name);const locEls=card.querySelectorAll(&#x27;[class*=&quot;fontBody&quot;],[class*=&quot;address&quot;]&#x27;);const locTexts=Array.from(locEls).map(el=&gt;el.textContent.trim()).filter(t=&gt;t&amp;&amp;t!==name&amp;&amp;t.length&lt;150&amp;&amp;!/(star|review|\d+\s+(month|year|week))/i.test(t));const rloc=locTexts[0]||&#x27;&#x27;;const walker=document.createTreeWalker(card,4);const texts=[];while(walker.nextNode()){const node=walker.currentNode;if(ratingEl.compareDocumentPosition(node)&amp;2||ratingEl.contains(node))continue;const t=(node.textContent||&#x27;&#x27;).trim();if(t.length&gt;=20&amp;&amp;t.length&lt;=1000&amp;&amp;!/(star|Rated|\d+\s+(month|year|week|day)s?\s+ago|Local Guide|See more|Edit|Delete)/i.test(t)&amp;&amp;!/^\d[\d\s.,★☆]+$/.test(t)){texts.push(t);}}const review=texts.length&gt;0?texts.sort((a,b)=&gt;b.length-a.length)[0]:&#x27;&#x27;;if(review)reviews.push({name,location:rloc,review});}console.log(`[Harvester] ${reviews.length} reviews. Matching...`);const norm=s=&gt;(s||&#x27;&#x27;).toLowerCase().replace(/[^a-z0-9]+/g,&#x27; &#x27;).trim();const sw=new Set([&#x27;the&#x27;,&#x27;a&#x27;,&#x27;of&#x27;,&#x27;in&#x27;,&#x27;at&#x27;,&#x27;ga&#x27;,&#x27;ca&#x27;,&#x27;ny&#x27;,&#x27;tx&#x27;,&#x27;fl&#x27;]);const score=(photo,rev)=&gt;{const pL=norm(photo.location),pT=norm(photo.title),rN=norm(rev.name),rL=norm(rev.location);let sc=0;if(pL&amp;&amp;rL){if(pL.includes(rL)||rL.includes(pL))sc+=4;else sc+=pL.split(&#x27; &#x27;).filter(w=&gt;w.length&gt;2&amp;&amp;!sw.has(w)&amp;&amp;rL.split(&#x27; &#x27;).includes(w)).length;}if(pT&amp;&amp;rN){if(pT.includes(rN)||rN.includes(pT))sc+=3;else sc+=pT.split(&#x27; &#x27;).filter(w=&gt;w.length&gt;2&amp;&amp;!sw.has(w)&amp;&amp;rN.split(&#x27; &#x27;).includes(w)).length*0.5;}return sc;};let matched=0;for(const photo of items){let best=0,bestRev=null;for(const rev of reviews){const sc=score(photo,rev);if(sc&gt;best){best=sc;bestRev=rev;}}if(bestRev&amp;&amp;best&gt;=2){photo.caption=bestRev.review;matched++;}}console.log(`%c[Harvester] Done! ${items.length} photos, ${matched} captions.`,&#x27;color:#135e58;font-weight:bold;&#x27;);const blob=new Blob([JSON.stringify(items,null,2)],{type:&#x27;application/json&#x27;});const a=document.createElement(&#x27;a&#x27;);a.href=URL.createObjectURL(blob);a.download=&#x27;maps_contributions.json&#x27;;document.body.appendChild(a);a.click();document.body.removeChild(a);})()">&#128248; Harvest Photos + Reviews (v7.0)</a>
       <p class="tip"><em>Shortcut: Press <code>Cmd+Shift+B</code> (Mac) or <code>Ctrl+Shift+B</code> (Windows) to show your bookmarks bar.</em></p>
     </li>
     <li>
-      Visit your photos page: <br>
+      Visit your Google Maps profile photos page:<br>
       <a href="https://www.google.com/maps/contrib/109844961042142282833/photos" target="_blank" rel="noopener noreferrer"><strong>https://www.google.com/maps/contrib/109844961042142282833/photos</strong></a>
     </li>
     <li>
-      Click the <strong>📸 Harvest Maps Photos (v4.0)</strong> bookmark. It automatically downloads <code>maps_contributions.json</code> with exact titles and locations.
+      Click the <strong>&#128248; Harvest Photos + Reviews (v7.0)</strong> bookmark. It will automatically:
+      <ul>
+        <li>Scroll and extract all your photos from the <strong>Photos</strong> tab</li>
+        <li>Switch to the <strong>Reviews</strong> tab and load all your reviews</li>
+        <li>Match each review to the photo with the closest location and add it as a caption</li>
+        <li>Download <code>maps_contributions.json</code></li>
+      </ul>
+      <p class="tip"><em>This takes 30&ndash;60 seconds. Watch the browser console for progress logs.</em></p>
     </li>
     <li>
       In terminal, run:
       <pre><code>python3 manage.py import-maps ~/Downloads/maps_contributions.json</code></pre>
-      <em>Existing photos are automatically matched and updated; new photos are added without creating duplicates.</em>
+      <em>Existing photos are matched and updated; new ones are added. No duplicates created.</em>
     </li>
   </ol>
 </div>
-
-<div class="card">
-  <h2>Method 2: DevTools Console (Direct Copy &amp; Paste)</h2>
-  <ol>
-    <li>Open DevTools Console (<code>Cmd+Option+J</code> on Mac or <code>Ctrl+Shift+J</code> on Windows).</li>
-    <li>Copy and paste this snippet:</li>
-  </ol>
-  <button class="copy-btn" onclick="copyConsoleScript()">Copy Script</button>
-  <pre><code id="consoleScript">(async () => {
-  console.log("%c[Harvester v4] Starting extraction...", "color: #135e58; font-weight: bold; font-size: 14px;");
-
-  // 1. Ensure on Photos tab
-  if (!location.href.includes('/photos')) {
-    const pt = Array.from(document.querySelectorAll('button, [role="tab"], a')).find(t => (t.textContent || '').trim().toLowerCase() === 'photos');
-    if (pt) { pt.click(); await new Promise(r => setTimeout(r, 2000)); }
-  }
-
-  // 2. Find scrollable photos pane
-  let sp = null;
-  for (const d of document.querySelectorAll('div')) {
-    const s = window.getComputedStyle(d);
-    if ((s.overflowY === 'auto' || s.overflowY === 'scroll') && d.scrollHeight > d.clientHeight + 50) {
-      if ((d.textContent || '').includes('Date') || (d.textContent || '').includes('37')) {
-        sp = d; break;
-      }
-    }
-  }
-  sp = sp || document.querySelector('div[role="main"]') || document.body;
-
-  console.log("[Harvester] Scrolling photo list to load cards...");
-  let lh = 0;
-  for (let i = 0; i < 15; i++) {
-    sp.scrollTop = sp.scrollHeight;
-    await new Promise(r => setTimeout(r, 500));
-    if (sp.scrollHeight === lh && i > 4) break;
-    lh = sp.scrollHeight;
-  }
-
-  const clean = (raw) => {
-    if (!raw) return null;
-    const m = raw.match(/https?:\/\/[^"'\)\s]+/);
-    if (!m) return null;
-    const u = m[0];
-    if (/(\/a\/|\/ogw\/|default-user|avatar)/i.test(u)) return null;
-    if (/(googleusercontent\.com|ggpht\.com|googleapis\.com)/i.test(u)) {
-      if (/(\/p\/|gps-proxy|gps-cs|grass-cs|=w|=s|=h)/i.test(u)) {
-        return u.split('=')[0] + '=s1600';
-      }
-    }
-    return null;
-  };
-
-  const seen = new Set();
-  const cand = Array.from(sp.querySelectorAll('img, [style*="url("], div[role="img"]'));
-  const pes = [];
-
-  for (const el of cand) {
-    // Skip small place cover icons (< 65px) and avatars
-    const rect = el.getBoundingClientRect();
-    if (rect.width > 0 && rect.width < 65) continue;
-
-    let raw = el.tagName === 'IMG'
-      ? (el.currentSrc || el.src || el.getAttribute('data-src'))
-      : (el.getAttribute('style') || window.getComputedStyle(el).backgroundImage);
-
-    const high = clean(raw);
-    if (!high || seen.has(high) || high.includes('/a-/')) continue;
-    seen.add(high);
-    pes.push({ el, url: high });
-  }
-
-  const items = [];
-  for (const { el, url } of pes) {
-    let curr = el, card = el;
-    while (curr && curr.parentElement && curr.parentElement !== sp && curr.parentElement !== document.body) {
-      const p = curr.parentElement;
-      const txt = (p.textContent || '').trim();
-      if (txt.includes('Local Guide') || txt.includes('Edit profile') || txt.length > 280) break;
-      card = p; curr = p;
-    }
-
-    let ael = card.querySelector('[class*="fontBody"], [class*="address"], [class*="caption"]');
-    let loc = (ael?.textContent || '').trim();
-
-    let title = '';
-    // Check previous sibling of address element
-    if (ael && ael.previousElementSibling) {
-      title = (ael.previousElementSibling.textContent || '').trim();
-    }
-    // Check header text minus address text
-    if ((!title || title.length > 60) && ael && ael.parentElement) {
-      const ptxt = (ael.parentElement.textContent || '').trim();
-      if (loc && ptxt.includes(loc)) {
-        title = ptxt.replace(loc, '').trim();
-      }
-    }
-    // Backwards traversal for shared place headers
-    if (!title || title.includes('Local Guide') || title.length > 60) {
-      let prev = card;
-      while (prev) {
-        prev = prev.previousElementSibling || prev.parentElement;
-        if (!prev || prev === sp || prev === document.body) break;
-        const prevAel = prev.querySelector?.('[class*="fontBody"], [class*="address"]');
-        if (prevAel) {
-          if (!loc) loc = (prevAel.textContent || '').trim();
-          if (prevAel.previousElementSibling) {
-            title = (prevAel.previousElementSibling.textContent || '').trim();
-          } else if (prevAel.parentElement) {
-            title = (prevAel.parentElement.textContent || '').replace(prevAel.textContent || '', '').trim();
-          }
-        }
-        if (!title) {
-          const ct = prev.querySelector?.('[class*="fontHeadline"], [class*="title"], h1, h2, h3')?.textContent?.trim();
-          if (ct && !ct.includes('Local Guide') && ct.length < 60) title = ct;
-        }
-        if (title && !title.includes('Local Guide') && title.length < 60) break;
-      }
-    }
-
-    title = title.replace(/^/, '').replace(/.*/, '').replace(/.*/, '').replace(/\s+/g, ' ').trim();
-    loc = loc.replace(/^/, '').replace(/.*/, '').replace(/.*/, '').replace(/\s+/g, ' ').trim();
-
-    if (!title || title.includes('Local Guide') || title.length > 60) {
-      title = 'Photo Discovery';
-    }
-
-    const comb = (title + ' ' + loc).toLowerCase();
-    const cat = /(sign|letras|faro)/i.test(comb)
-      ? 'Signs and Wonders'
-      : /(spain|belize|portugal|madrid|sevilla|church|park|mexicana)/i.test(comb)
-        ? 'Travel Discoveries'
-        : 'Public Art & Sculptures';
-
-    const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(title + (loc ? ' ' + loc : ''))}`;
-
-    items.push({
-      title: title,
-      location: loc,
-      image_url: url,
-      maps_url: mapUrl,
-      category: cat
-    });
-  }
-
-  const finalItems = items.slice(0, 37);
-  console.log(`%c[Harvester] Extracted ${finalItems.length} photos!`, "color: #135e58; font-weight: bold; font-size: 14px;");
-
-  const blob = new Blob([JSON.stringify(finalItems, null, 2)], { type: "application/json" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "maps_contributions.json";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  console.log("%c✓ Successfully downloaded maps_contributions.json with clean titles!", "color: green; font-weight: bold;");
-})();</code></pre>
-</div>
-
-<script>
-function copyConsoleScript() {
-  const code = document.getElementById('consoleScript').textContent;
-  navigator.clipboard.writeText(code).then(() => {
-    const btn = document.querySelector('.copy-btn');
-    btn.textContent = 'Copied!';
-    setTimeout(() => { btn.textContent = 'Copy Script'; }, 2000);
-  });
-}
-</script>
 
 </body>
 </html>

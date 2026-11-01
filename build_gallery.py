@@ -6,6 +6,7 @@ Works out of the box with zero external dependencies (pure standard library),
 while also leveraging PyYAML if installed in the environment.
 """
 import html
+import json
 import re
 from collections import defaultdict
 from pathlib import Path
@@ -210,6 +211,18 @@ def normalize_photo(photo: dict, root: Path) -> dict:
     else:
         print(f'Warning: no image_path specified for {pid}')
 
+    # Prefer explicitly stored lat/lon; fall back to parsing from maps_url
+    lat = photo.get("lat")
+    lon = photo.get("lon")
+    if lat is not None:
+        try:
+            lat = float(lat)
+            lon = float(lon)
+        except (TypeError, ValueError):
+            lat = lon = None
+    if lat is None:
+        lat, lon = extract_coords_from_url(maps_url)
+
     return {
         "id": pid,
         "title": title,
@@ -219,7 +232,19 @@ def normalize_photo(photo: dict, root: Path) -> dict:
         "image_path": image_path,
         "caption": caption,
         "related": related,
+        "lat": lat,
+        "lon": lon,
     }
+
+
+def extract_coords_from_url(maps_url: str):
+    """Extract (lat, lon) from a Google Maps URL in ?q=lat,lon format, else (None, None)."""
+    if not maps_url:
+        return None, None
+    m = re.search(r"[?&]q=(-?\d+\.?\d*),(-?\d+\.?\d*)", maps_url)
+    if m:
+        return round(float(m.group(1)), 6), round(float(m.group(2)), 6)
+    return None, None
 
 
 def location_sort_key(location: str) -> str:
@@ -297,23 +322,19 @@ def main():
             )
 
             loc_html = f'<p class="location">{esc(photo["location"])}</p>' if photo["location"] else ""
-            cap_html = f'<p>{esc(photo["caption"])}</p>' if photo["caption"] else ""
+            cap_html = f'<p class="caption">{esc(photo["caption"])}</p>' if photo["caption"] else ""
 
             data_loc = esc(photo["location"].lower())
             data_title = esc(photo["title"].lower())
             data_order = photo["_order"]
             loc_sort = esc(location_sort_key(photo["location"]))
-            img_tag = f'<img src="{esc(photo["image_path"])}" alt="{esc(photo["title"])}" loading="lazy">'
-            img_html = (
-                f'<a href="{esc(url)}" target="_blank" rel="noopener noreferrer">{img_tag}</a>'
-                if url else img_tag
-            )
+            img_tag = f'<img src="{esc(photo["image_path"])}" alt="{esc(photo["title"])}" loading="lazy" class="lb-trigger">'
 
             cards.append(
                 f'<article class="card" id="{esc(photo["id"])}" '
                 f'data-title="{data_title}" data-location="{data_loc}" '
                 f'data-location-sort="{loc_sort}" data-order="{data_order}">\n'
-                f'  {img_html}\n'
+                f'  {img_tag}\n'
                 f'  <div class="card-body">\n'
                 f'    <h3>{esc(photo["title"])}</h3>\n'
                 f'    {loc_html}\n'
@@ -339,21 +360,100 @@ def main():
     sort_js = """
 <script>
 (function () {
-  const select = document.getElementById('sort-select');
+  var select = document.getElementById('sort-select');
   if (!select) return;
   function applySort(mode) {
     document.querySelectorAll('.collection .grid').forEach(function (grid) {
-      const cards = Array.from(grid.querySelectorAll('.card'));
+      var cards = Array.from(grid.querySelectorAll('.card'));
       cards.sort(function (a, b) {
         if (mode === 'title')    return a.dataset.title.localeCompare(b.dataset.title);
         if (mode === 'location') return a.dataset.locationSort.localeCompare(b.dataset.locationSort);
-        return parseInt(a.dataset.order) - parseInt(b.dataset.order); // date (original order)
+        return parseInt(a.dataset.order) - parseInt(b.dataset.order);
       });
       cards.forEach(function (c) { grid.appendChild(c); });
     });
   }
   select.addEventListener('change', function () { applySort(this.value); });
   applySort(select.value);
+
+  // Caption toggle
+  var ct = document.getElementById('caption-toggle');
+  if (ct) {
+    var stored = sessionStorage.getItem('captionsVisible');
+    if (stored === 'false') { ct.checked = false; document.body.classList.add('captions-off'); }
+    ct.addEventListener('change', function () {
+      document.body.classList.toggle('captions-off', !this.checked);
+      sessionStorage.setItem('captionsVisible', this.checked ? 'true' : 'false');
+    });
+  }
+}());
+</script>"""
+
+    lightbox_html = """<div id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <button id="lb-close" aria-label="Close">&times;</button>
+  <button id="lb-prev" aria-label="Previous photo">&#8249;</button>
+  <button id="lb-next" aria-label="Next photo">&#8250;</button>
+  <img id="lb-img" src="" alt="">
+  <div class="lb-meta">
+    <h3 id="lb-title"></h3>
+    <p id="lb-location" class="location"></p>
+    <p id="lb-caption" class="caption"></p>
+    <a id="lb-link" class="map-link" href="" target="_blank" rel="noopener noreferrer" style="display:none">View on Google Maps</a>
+  </div>
+</div>"""
+
+    lightbox_js = """<script>
+(function () {
+  var lb = document.getElementById('lightbox');
+  var lbImg = document.getElementById('lb-img');
+  var lbTitle = document.getElementById('lb-title');
+  var lbLoc = document.getElementById('lb-location');
+  var lbCap = document.getElementById('lb-caption');
+  var lbLink = document.getElementById('lb-link');
+
+  function getCards() { return Array.from(document.querySelectorAll('.card')); }
+  var currentIdx = 0;
+
+  function openAt(idx) {
+    var cards = getCards();
+    currentIdx = ((idx % cards.length) + cards.length) % cards.length;
+    var card = cards[currentIdx];
+    var img = card.querySelector('img');
+    lbImg.src = img ? img.src : '';
+    lbImg.alt = img ? img.alt : '';
+    lbTitle.textContent = (card.querySelector('h3') || {}).textContent || '';
+    lbLoc.textContent = (card.querySelector('.location') || {}).textContent || '';
+    lbCap.textContent = (card.querySelector('.caption') || {}).textContent || '';
+    var link = card.querySelector('.map-link');
+    if (link) { lbLink.href = link.href; lbLink.style.display = ''; }
+    else { lbLink.style.display = 'none'; }
+    lb.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function close() {
+    lb.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll('.lb-trigger').forEach(function (img) {
+    img.addEventListener('click', function () {
+      var cards = getCards();
+      openAt(cards.indexOf(img.closest('.card')));
+    });
+  });
+
+  document.getElementById('lb-close').addEventListener('click', close);
+  document.getElementById('lb-prev').addEventListener('click', function () { openAt(currentIdx - 1); });
+  document.getElementById('lb-next').addEventListener('click', function () { openAt(currentIdx + 1); });
+  lb.addEventListener('click', function (e) { if (e.target === lb) close(); });
+
+  document.addEventListener('keydown', function (e) {
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowLeft') openAt(currentIdx - 1);
+    if (e.key === 'ArrowRight') openAt(currentIdx + 1);
+  });
 }());
 </script>"""
 
@@ -384,16 +484,22 @@ def main():
     <option value="title">Title (A–Z)</option>
     <option value="date">Date Added</option>
   </select>
+  <label class="caption-toggle" for="caption-toggle" title="Show or hide photo captions">
+    <input type="checkbox" id="caption-toggle" checked>
+    <span>Captions</span>
+  </label>
 </div>
 <nav class="collection-nav" aria-label="Photo collections">{nav}</nav>
 <main>{"".join(sections)}</main>
 <footer><p>Photos and captions are curated for this portfolio. Location links open Google Maps.</p></footer>
+{lightbox_html}
 {sort_js}
+{lightbox_js}
 </body>
 </html>
 """
     output_path = ROOT / "index.html"
-    output_path.write_text(page, encoding="utf-8")
+    output_path.write_text(page.encode("utf-8", errors="ignore").decode("utf-8"), encoding="utf-8")
     print(f"Generated {output_path}")
     print(f"Processed {len(photos)} photo records across {len(categories)} collections.")
 

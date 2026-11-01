@@ -26,6 +26,12 @@ DATA_FILE = ROOT / "data" / "photos.yaml"
 IMAGES_DIR = ROOT / "images"
 
 
+def _clean_str(s):
+    """Drop lone Unicode surrogates (JavaScript UTF-16 artifacts) that UTF-8 can't encode."""
+    return (s or "").encode("utf-8", errors="ignore").decode("utf-8")
+
+
+
 # ---------------------------------------------------------------------------
 # EXIF Extraction (Pure standard library, zero dependencies)
 # ---------------------------------------------------------------------------
@@ -166,6 +172,8 @@ def reverse_geocode(lat: float, lon: float) -> str:
         return ""
 
 
+
+
 # ---------------------------------------------------------------------------
 # YAML Helpers
 # ---------------------------------------------------------------------------
@@ -246,9 +254,9 @@ def upsert_photos(incoming_photos: list[dict]):
                 target["maps_url"] = inc["maps_url"]
             if inc.get("category"):
                 target["category"] = inc["category"]
-            # Preserve existing user caption and related if target has them
-            if inc.get("caption") and not target.get("caption"):
-                target["caption"] = inc["caption"]
+            # Always sync caption from import so stale/bad captions get cleared
+            target["caption"] = inc.get("caption", "")
+
             if inc.get("related") and not target.get("related"):
                 target["related"] = inc["related"]
             updated_count += 1
@@ -531,24 +539,24 @@ def sanitize_harvested_items(items: list, default_cat: str) -> list:
             elif "Local Guide" in title:
                 title = "Photo Discovery"
 
-        category = it.get("category") or default_cat
-        comb = (title + " " + location).lower()
-        if any(w in comb for w in ["sign", "letras", "faro"]):
+        t = title.lower()
+        if any(w in t for w in ["sign", "letras", "i love", "faro"]):
             category = "Signs and Wonders"
-        elif any(w in comb for w in ["spain", "belize", "portugal", "madrid", "sevilla", "park", "church", "mexicana"]):
-            category = "Travel Discoveries"
-        elif any(w in comb for w in ["sculpture", "statue", "monument", "art", "mural"]):
+        elif any(w in t for w in ["sculpture", "statue", "monument", "memorial", "mural", "obra"]):
             category = "Public Art & Sculptures"
+        else:
+            category = it.get("category") or "Travel Discoveries"
 
         maps_url = it.get("maps_url") or ""
         if (not maps_url or "contrib" in maps_url) and title and title != "Photo Discovery":
             maps_url = f"https://www.google.com/maps/search/?api=1&query={urllib.parse.quote_plus(title + ' ' + location)}"
 
         clean.append({
-            "title": title or "Photo Discovery",
-            "location": location,
-            "image_url": u,
-            "maps_url": maps_url,
+            "title": _clean_str(title or "Photo Discovery"),
+            "location": _clean_str(location),
+            "caption": _clean_str(str(it.get("caption") or "").strip()),
+            "image_url": _clean_str(u),
+            "maps_url": _clean_str(maps_url),
             "category": category,
         })
 
@@ -693,171 +701,90 @@ def cmd_scan_inbox(args):
     build_gallery.main()
 
 
+def cmd_import_reviews(args):
+    """Match reviews from maps_reviews.json to photos by location and apply as captions."""
+    import json
+
+    review_file = Path(args.json_file).expanduser()
+    if not review_file.exists():
+        raise SystemExit(f"Review file not found: {review_file}")
+
+    reviews = json.loads(review_file.read_text(encoding="utf-8"))
+    if not reviews:
+        print("No reviews found in file.")
+        return
+
+    photos = build_gallery.load_photos(ROOT)
+
+    def norm(s):
+        return re.sub(r"[^a-z0-9]+", " ", (s or "").lower()).strip()
+
+    def match_score(p, r):
+        p_loc = norm(p.get("location", ""))
+        p_title = norm(p.get("title", ""))
+        r_name = norm(r.get("name", ""))
+        r_loc = norm(r.get("location", ""))
+        score = 0
+        stopwords = {"the", "a", "of", "in", "at", "ga", "ca", "ny", "tx", "fl"}
+        if p_loc and r_loc:
+            if p_loc in r_loc or r_loc in p_loc:
+                score += 4
+            else:
+                shared = set(p_loc.split()) & set(r_loc.split()) - stopwords
+                score += len(shared)
+        if p_title and r_name:
+            if p_title in r_name or r_name in p_title:
+                score += 3
+            else:
+                shared = set(p_title.split()) & set(r_name.split()) - stopwords
+                score += len(shared) * 0.5
+        return score
+
+    updated = 0
+    skipped = 0
+    for photo in photos:
+        if photo.get("caption") and not args.force:
+            skipped += 1
+            continue
+        best_score = 0
+        best_review = None
+        for rev in reviews:
+            if not (rev.get("review") or "").strip():
+                continue
+            s = match_score(photo, rev)
+            if s > best_score:
+                best_score = s
+                best_review = rev
+        if best_review and best_score >= 2:
+            photo["caption"] = best_review["review"].strip()
+            updated += 1
+            print(f"  matched: {photo['title']} -> '{best_review['name']}' (score {best_score:.1f})")
+        elif best_review and best_score > 0:
+            print(f"  weak match skipped: {photo['title']} -> '{best_review['name']}' (score {best_score:.1f})")
+
+    if skipped:
+        print(f"  (skipped {skipped} photos with existing captions; use --force to overwrite)")
+
+    if updated:
+        content = "# Photography Discoveries Catalog\n# Curated from Google Maps Local Guide contributions\n\nphotos:\n"
+        content += "\n\n".join(photo_to_yaml(p) for p in photos) + "\n"
+        DATA_FILE.write_text(content, encoding="utf-8")
+        print(f"\nUpdated {updated} photo(s) with review captions.")
+        build_gallery.main()
+    else:
+        print("No photos updated.")
+
+
 def cmd_harvest_guide(args):
-    """Show guide and JavaScript snippet to harvest Google Maps contributions."""
-    snippet = """(async () => {
-  console.log("%c[Harvester v4] Starting extraction...", "color: #135e58; font-weight: bold; font-size: 14px;");
-
-  // 1. Ensure on Photos tab
-  if (!location.href.includes('/photos')) {
-    const pt = Array.from(document.querySelectorAll('button, [role="tab"], a')).find(t => (t.textContent || '').trim().toLowerCase() === 'photos');
-    if (pt) { pt.click(); await new Promise(r => setTimeout(r, 2000)); }
-  }
-
-  // 2. Find scrollable photos pane
-  let sp = null;
-  for (const d of document.querySelectorAll('div')) {
-    const s = window.getComputedStyle(d);
-    if ((s.overflowY === 'auto' || s.overflowY === 'scroll') && d.scrollHeight > d.clientHeight + 50) {
-      if ((d.textContent || '').includes('Date') || (d.textContent || '').includes('37')) {
-        sp = d; break;
-      }
-    }
-  }
-  sp = sp || document.querySelector('div[role="main"]') || document.body;
-
-  console.log("[Harvester] Scrolling photo list to load cards...");
-  let lh = 0;
-  for (let i = 0; i < 15; i++) {
-    sp.scrollTop = sp.scrollHeight;
-    await new Promise(r => setTimeout(r, 500));
-    if (sp.scrollHeight === lh && i > 4) break;
-    lh = sp.scrollHeight;
-  }
-
-  const clean = (raw) => {
-    if (!raw) return null;
-    const m = raw.match(/https?:\\/\\/[^"\'\\)\\s]+/);
-    if (!m) return null;
-    const u = m[0];
-    if (/(\\/a\\/|\\/ogw\\/|default-user|avatar)/i.test(u)) return null;
-    if (/(googleusercontent\\.com|ggpht\\.com|googleapis\\.com)/i.test(u)) {
-      if (/(\\/p\\/|gps-proxy|gps-cs|grass-cs|=w|=s|=h)/i.test(u)) {
-        return u.split('=')[0] + '=s1600';
-      }
-    }
-    return null;
-  };
-
-  const seen = new Set();
-  const cand = Array.from(sp.querySelectorAll('img, [style*="url("], div[role="img"]'));
-  const pes = [];
-
-  for (const el of cand) {
-    // Skip small place cover icons (< 65px) and avatars
-    const rect = el.getBoundingClientRect();
-    if (rect.width > 0 && rect.width < 65) continue;
-
-    let raw = el.tagName === 'IMG'
-      ? (el.currentSrc || el.src || el.getAttribute('data-src'))
-      : (el.getAttribute('style') || window.getComputedStyle(el).backgroundImage);
-
-    const high = clean(raw);
-    if (!high || seen.has(high) || high.includes('/a-/')) continue;
-    seen.add(high);
-    pes.push({ el, url: high });
-  }
-
-  const items = [];
-  for (const { el, url } of pes) {
-    let curr = el, card = el;
-    while (curr && curr.parentElement && curr.parentElement !== sp && curr.parentElement !== document.body) {
-      const p = curr.parentElement;
-      const txt = (p.textContent || '').trim();
-      if (txt.includes('Local Guide') || txt.includes('Edit profile') || txt.length > 280) break;
-      card = p; curr = p;
-    }
-
-    let ael = card.querySelector('[class*="fontBody"], [class*="address"], [class*="caption"]');
-    let loc = (ael?.textContent || '').trim();
-
-    let title = '';
-    // Check previous sibling of address element
-    if (ael && ael.previousElementSibling) {
-      title = (ael.previousElementSibling.textContent || '').trim();
-    }
-    // Check header text minus address text
-    if ((!title || title.length > 60) && ael && ael.parentElement) {
-      const ptxt = (ael.parentElement.textContent || '').trim();
-      if (loc && ptxt.includes(loc)) {
-        title = ptxt.replace(loc, '').trim();
-      }
-    }
-    // Backwards traversal for shared place headers
-    if (!title || title.includes('Local Guide') || title.length > 60) {
-      let prev = card;
-      while (prev) {
-        prev = prev.previousElementSibling || prev.parentElement;
-        if (!prev || prev === sp || prev === document.body) break;
-        const prevAel = prev.querySelector?.('[class*="fontBody"], [class*="address"]');
-        if (prevAel) {
-          if (!loc) loc = (prevAel.textContent || '').trim();
-          if (prevAel.previousElementSibling) {
-            title = (prevAel.previousElementSibling.textContent || '').trim();
-          } else if (prevAel.parentElement) {
-            title = (prevAel.parentElement.textContent || '').replace(prevAel.textContent || '', '').trim();
-          }
-        }
-        if (!title) {
-          const ct = prev.querySelector?.('[class*="fontHeadline"], [class*="title"], h1, h2, h3')?.textContent?.trim();
-          if (ct && !ct.includes('Local Guide') && ct.length < 60) title = ct;
-        }
-        if (title && !title.includes('Local Guide') && title.length < 60) break;
-      }
-    }
-
-    title = title.replace(/^/, '').replace(/.*/, '').replace(/.*/, '').replace(/\\s+/g, ' ').trim();
-    loc = loc.replace(/^/, '').replace(/.*/, '').replace(/.*/, '').replace(/\\s+/g, ' ').trim();
-
-    if (!title || title.includes('Local Guide') || title.length > 60) {
-      title = 'Photo Discovery';
-    }
-
-    const comb = (title + ' ' + loc).toLowerCase();
-    const cat = /(sign|letras|faro)/i.test(comb)
-      ? 'Signs and Wonders'
-      : /(spain|belize|portugal|madrid|sevilla|church|park|mexicana)/i.test(comb)
-        ? 'Travel Discoveries'
-        : 'Public Art & Sculptures';
-
-    const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(title + (loc ? ' ' + loc : ''))}`;
-
-    items.push({
-      title: title,
-      location: loc,
-      image_url: url,
-      maps_url: mapUrl,
-      category: cat
-    });
-  }
-
-  const finalItems = items.slice(0, 37);
-  console.log(`%c[Harvester] Extracted ${finalItems.length} photos!`, "color: #135e58; font-weight: bold; font-size: 14px;");
-
-  const blob = new Blob([JSON.stringify(finalItems, null, 2)], { type: "application/json" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "maps_contributions.json";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  console.log("%c✓ Successfully downloaded maps_contributions.json with clean titles!", "color: green; font-weight: bold;");
-})();"""
-
-    print("=" * 70)
-    print("GOOGLE MAPS PROFILE HARVEST GUIDE (v4.0 Smart-Sync)")
-    print("=" * 70)
-    print("\n1. Open Chrome/Safari and visit your Google Maps Profile Photos directly:")
-    print("   https://www.google.com/maps/contrib/109844961042142282833/photos")
-    print("\n2. Press Cmd+Option+J (Mac) or Ctrl+Shift+J (Windows) to open the Console.")
-    print("\n3. Paste the following JavaScript snippet and press Enter:\n")
-    print("-" * 70)
-    print(snippet)
-    print("-" * 70)
-    print("\n4. It will auto-download 'maps_contributions.json'.")
-    print("5. Run: python3 manage.py import-maps ~/Downloads/maps_contributions.json")
-    print("   (Existing photos are recognized and updated without creating duplicates)")
-    print("=" * 70)
+    """Open the HTML harvester tool in the browser."""
+    import subprocess, os
+    tool_path = ROOT / "tools" / "harvest_google_maps.html"
+    print(f"Opening {tool_path}")
+    print("Drag the bookmarklet to your bookmarks bar, then visit your Maps profile.")
+    try:
+        subprocess.run(["open", str(tool_path)], check=True)
+    except Exception:
+        print(f"Open manually: {tool_path}")
 
 
 def main():
@@ -882,6 +809,11 @@ def main():
     p_maps.add_argument("json_file", help="Path to maps_contributions.json")
     p_maps.add_argument("--category", default="Public Art & Sculptures", help="Default category")
 
+    # import-reviews
+    p_reviews = subparsers.add_parser("import-reviews", help="Match Maps reviews to photos and apply as captions")
+    p_reviews.add_argument("json_file", help="Path to maps_reviews.json")
+    p_reviews.add_argument("--force", action="store_true", help="Overwrite existing captions")
+
     # download-images
     subparsers.add_parser("download-images", help="Download remote CDN photos locally")
 
@@ -899,6 +831,7 @@ def main():
         "add": cmd_add,
         "import-takeout": cmd_import_takeout,
         "import-maps": cmd_import_maps,
+        "import-reviews": cmd_import_reviews,
         "download-images": cmd_download_images,
         "scan-inbox": cmd_scan_inbox,
         "harvest-guide": cmd_harvest_guide,
