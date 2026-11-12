@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Manage QuestForSignsOfLife portfolio:
+- sync: One-shot update: import maps_contributions.json, download images, rebuild
 - build: Rebuild index.html
 - add: Interactive wizard with EXIF GPS detection
 - import-takeout: Batch-import Google Takeout folder with JSON sidecars
@@ -12,8 +13,11 @@ import argparse
 import json
 import os
 import re
+import shlex
 import struct
+import subprocess
 import sys
+import time
 import urllib.parse
 import urllib.request
 from pathlib import Path
@@ -178,16 +182,23 @@ def reverse_geocode(lat: float, lon: float) -> str:
 # YAML Helpers
 # ---------------------------------------------------------------------------
 
+def _ys(s: str) -> str:
+    """JSON-encode a string for YAML, keeping Unicode chars as-is (no \\uXXXX escapes)."""
+    return json.dumps(s, ensure_ascii=False)
+
+
 def photo_to_yaml(photo: dict) -> str:
     """Format a single photo entry as valid YAML with clean indenting."""
     lines = [f"  - id: {photo['id']}"]
-    lines.append(f"    title: {json.dumps(photo.get('title', 'Untitled'))}")
-    lines.append(f"    category: {json.dumps(photo.get('category', 'Uncategorized'))}")
+    lines.append(f"    title: {_ys(photo.get('title', 'Untitled'))}")
+    lines.append(f"    category: {_ys(photo.get('category', 'Uncategorized'))}")
     if photo.get("location"):
-        lines.append(f"    location: {json.dumps(photo['location'])}")
+        lines.append(f"    location: {_ys(photo['location'])}")
     if photo.get("maps_url"):
-        lines.append(f"    maps_url: {json.dumps(photo['maps_url'])}")
-    lines.append(f"    image_path: {json.dumps(photo.get('image_path', ''))}")
+        lines.append(f"    maps_url: {_ys(photo['maps_url'])}")
+    if photo.get("maps_photo_id"):
+        lines.append(f"    maps_photo_id: {photo['maps_photo_id']}")
+    lines.append(f"    image_path: {_ys(photo.get('image_path', ''))}")
 
     caption = (photo.get("caption") or "").strip()
     if "\n" in caption:
@@ -195,7 +206,7 @@ def photo_to_yaml(photo: dict) -> str:
         for cline in caption.splitlines():
             lines.append(f"      {cline.strip()}")
     elif caption:
-        lines.append(f"    caption: {json.dumps(caption)}")
+        lines.append(f"    caption: {_ys(caption)}")
     else:
         lines.append('    caption: ""')
 
@@ -211,57 +222,125 @@ def photo_to_yaml(photo: dict) -> str:
     return "\n".join(lines)
 
 
-def get_photo_fingerprint(p: dict) -> str:
-    """Extract a unique identity for a photo (by CDN photo ID or normalized local path)."""
-    img = p.get("image_path") or p.get("image_url") or ""
-    # Extract unique Google CDN key if present (e.g. /gps-cs/<KEY>=... or /grass-cs/<KEY>=... or /p/<KEY>=...)
+def _cdn_photo_id(url: str) -> str:
+    """Extract the unique CDN photo key from a Google CDN URL, or empty string."""
     for prefix in ["/gps-cs/", "/grass-cs/", "/p/"]:
-        if prefix in img:
-            part = img.split(prefix)[1]
+        if prefix in url:
+            part = url.split(prefix)[1]
             return part.split("=")[0].split("/")[0]
-    return img.strip().lower()
+    return ""
+
+
+def get_photo_fingerprint(p: dict) -> str:
+    """Return persistent identity: stored maps_photo_id first, then CDN key, then local path."""
+    if p.get("maps_photo_id"):
+        return p["maps_photo_id"]
+    img = p.get("image_path") or p.get("image_url") or ""
+    cdn_id = _cdn_photo_id(img)
+    return cdn_id if cdn_id else img.strip().lower()
+
+
+def _norm_title_key(s: str) -> str:
+    return re.sub(r"[^a-z0-9]", "", (s or "").lower())
+
+
+def _norm_loc_key(s: str) -> str:
+    return (s or "").lower().strip()
+
+
+def _apply_update(target: dict, inc: dict):
+    """Apply fields from an incoming entry onto an existing entry."""
+    if inc.get("title") and inc["title"] != "Photo Discovery":
+        target["title"] = inc["title"]
+    if inc.get("location"):
+        target["location"] = inc["location"]
+    if inc.get("maps_url"):
+        target["maps_url"] = inc["maps_url"]
+    if inc.get("category"):
+        target["category"] = inc["category"]
+    target["caption"] = inc.get("caption", "")
+    if inc.get("related") and not target.get("related"):
+        target["related"] = inc["related"]
+    # Persist CDN ID on target so future syncs can match even after local download
+    if not target.get("maps_photo_id"):
+        cdn_id = _cdn_photo_id(inc.get("image_path") or inc.get("image_url") or "")
+        if cdn_id:
+            target["maps_photo_id"] = cdn_id
 
 
 def upsert_photos(incoming_photos: list[dict]):
-    """Update existing entries or insert new ones based on photo identity, preventing duplicates."""
+    """Update existing entries or insert new ones, preventing duplicates.
+
+    Matching priority:
+    1. Exact CDN fingerprint (maps_photo_id or CDN URL key)
+    2. Group-count matching by (title, location): incoming[i] → existing[i] in order,
+       preventing re-insertion of entries whose CDN URL changed to a local path.
+    """
     if not incoming_photos:
         return
 
     existing = build_gallery.load_photos(ROOT) if DATA_FILE.exists() else []
 
-    # Map existing photos by their fingerprint
-    existing_by_fp = {}
+    # Index 1: by CDN fingerprint
+    existing_by_fp: dict = {}
     for p in existing:
         fp = get_photo_fingerprint(p)
         if fp:
             existing_by_fp[fp] = p
 
+    # Index 2: by (title, location) → ordered list of existing entries
+    from collections import defaultdict
+    existing_by_tl: dict = defaultdict(list)
+    for p in existing:
+        key = (_norm_title_key(p.get("title")), _norm_loc_key(p.get("location")))
+        existing_by_tl[key].append(p)
+
+    # Group incoming by (title, location) to enable group-count matching
+    incoming_by_tl: dict = defaultdict(list)
+    for inc in incoming_photos:
+        key = (_norm_title_key(inc.get("title")), _norm_loc_key(inc.get("location")))
+        incoming_by_tl[key].append(inc)
+
     existing_ids = {p.get("id") for p in existing}
+    merged = list(existing)
+    matched_ids: set = set()
     updated_count = 0
     added_count = 0
-    merged = list(existing)
 
-    for inc in incoming_photos:
-        fp = get_photo_fingerprint(inc)
-        if fp and fp in existing_by_fp:
-            # UPDATE existing entry!
-            target = existing_by_fp[fp]
-            if inc.get("title") and inc["title"] != "Photo Discovery":
-                target["title"] = inc["title"]
-            if inc.get("location"):
-                target["location"] = inc["location"]
-            if inc.get("maps_url"):
-                target["maps_url"] = inc["maps_url"]
-            if inc.get("category"):
-                target["category"] = inc["category"]
-            # Always sync caption from import so stale/bad captions get cleared
-            target["caption"] = inc.get("caption", "")
+    for (title_key, loc_key), group in incoming_by_tl.items():
+        # Pass 1: match each incoming entry by CDN fingerprint
+        unmatched_incoming = []
+        for inc in group:
+            fp = get_photo_fingerprint(inc)
+            if fp and fp in existing_by_fp:
+                target = existing_by_fp[fp]
+                _apply_update(target, inc)
+                matched_ids.add(target.get("id"))
+                updated_count += 1
+            else:
+                unmatched_incoming.append(inc)
 
-            if inc.get("related") and not target.get("related"):
-                target["related"] = inc["related"]
+        if not unmatched_incoming:
+            continue
+
+        # Pass 2: group-count matching for entries without a CDN fingerprint match
+        # (handles existing entries whose image_path was switched from CDN to local)
+        unmatched_existing = [
+            p for p in existing_by_tl.get((title_key, loc_key), [])
+            if p.get("id") not in matched_ids
+        ]
+
+        n_pair = min(len(unmatched_incoming), len(unmatched_existing))
+        for i in range(n_pair):
+            _apply_update(unmatched_existing[i], unmatched_incoming[i])
+            matched_ids.add(unmatched_existing[i].get("id"))
             updated_count += 1
-        else:
-            # INSERT new entry!
+
+        # Any surplus incoming entries are genuinely new — insert them
+        for inc in unmatched_incoming[n_pair:]:
+            cdn_id = _cdn_photo_id(inc.get("image_path") or inc.get("image_url") or "")
+            if cdn_id:
+                inc["maps_photo_id"] = cdn_id
             base_id = build_gallery.slugify(inc.get("title") or "photo")
             pid = base_id
             counter = 2
@@ -270,8 +349,6 @@ def upsert_photos(incoming_photos: list[dict]):
                 counter += 1
             inc["id"] = pid
             existing_ids.add(pid)
-            if fp:
-                existing_by_fp[fp] = inc
             merged.append(inc)
             added_count += 1
 
@@ -563,21 +640,15 @@ def sanitize_harvested_items(items: list, default_cat: str) -> list:
     return clean
 
 
-def cmd_import_maps(args):
-    """Import photos harvested from Google Maps Profile contributions JSON."""
-    json_path = Path(args.json_file).expanduser().resolve()
-    if not json_path.is_file():
-        print(f"Error: Harvest file not found: {json_path}")
-        return
-
+def _import_maps_file(json_path: Path, default_cat: str = "Public Art & Sculptures"):
+    """Core import logic for a maps_contributions.json file (does not rebuild gallery)."""
     with json_path.open("r", encoding="utf-8") as f:
         items = json.load(f)
 
     if not isinstance(items, list):
         print("Error: Expected a JSON array of photo entries.")
-        return
+        return False
 
-    default_cat = args.category or "Public Art & Sculptures"
     items = sanitize_harvested_items(items, default_cat)
     print(f"Processing {len(items)} clean photo contribution(s) from {json_path.name}")
     new_entries = []
@@ -606,20 +677,32 @@ def cmd_import_maps(args):
         })
 
     append_photos(new_entries)
-    build_gallery.main()
+    return True
 
 
-def cmd_download_images(args):
-    """Download any remote CDN images listed in photos.yaml to local images/ directory."""
+def cmd_import_maps(args):
+    """Import photos harvested from Google Maps Profile contributions JSON."""
+    json_path = Path(args.json_file).expanduser().resolve()
+    if not json_path.is_file():
+        print(f"Error: Harvest file not found: {json_path}")
+        return
+
+    if _import_maps_file(json_path, args.category or "Public Art & Sculptures"):
+        build_gallery.main()
+
+
+def _download_remote_images() -> int:
+    """Download all remote CDN images to local disk and update catalog. Returns count downloaded."""
     photos = build_gallery.load_photos(ROOT)
     remote_photos = [p for p in photos if build_gallery.is_remote_url(p.get("image_path", ""))]
 
     if not remote_photos:
         print("No remote image URLs found in photos.yaml. All photos are already local.")
-        return
+        return 0
 
     print(f"Downloading {len(remote_photos)} remote image(s) to local storage...")
     content = DATA_FILE.read_text(encoding="utf-8")
+    downloaded = 0
 
     for p in remote_photos:
         url = p["image_path"]
@@ -634,14 +717,20 @@ def cmd_download_images(args):
             req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
             with urllib.request.urlopen(req, timeout=10) as resp:
                 dest_path.write_bytes(resp.read())
-            # Replace URL with local path in catalog
             local_rel = f"images/{cat_slug}/{dest_filename}"
             content = content.replace(f'"{url}"', f'"{local_rel}"').replace(url, local_rel)
+            downloaded += 1
         except Exception as e:
             print(f"  Warning: failed to download {url}: {e}")
 
     DATA_FILE.write_text(content, encoding="utf-8")
-    print("Catalog updated with local image paths.")
+    print(f"Catalog updated with local image paths ({downloaded} downloaded).")
+    return downloaded
+
+
+def cmd_download_images(args):
+    """Download any remote CDN images listed in photos.yaml to local images/ directory."""
+    _download_remote_images()
     build_gallery.main()
 
 
@@ -775,9 +864,238 @@ def cmd_import_reviews(args):
         print("No photos updated.")
 
 
+def _extract_harvester_js() -> str:
+    """URL-decode the JavaScript from the bookmarklet href in harvest_google_maps.html."""
+    import html as _html
+    tool_path = ROOT / "tools" / "harvest_google_maps.html"
+    if not tool_path.exists():
+        return ""
+    content = tool_path.read_text(encoding="utf-8")
+    m = re.search(r'href="(javascript:[^"]+)"', content)
+    if not m:
+        return ""
+    return _html.unescape(m.group(1))[len("javascript:"):]
+
+
+def _extract_contrib_url() -> str:
+    """Find the Google Maps contributions URL from harvest_google_maps.html."""
+    tool_path = ROOT / "tools" / "harvest_google_maps.html"
+    if not tool_path.exists():
+        return ""
+    content = tool_path.read_text(encoding="utf-8")
+    m = re.search(r'href="(https://www\.google\.com/maps/contrib/[^"]+)"', content)
+    return m.group(1) if m else ""
+
+
+def _latest_contributions_file(downloads: Path) -> tuple[Path | None, float]:
+    """Return (newest maps_contributions*.json in downloads, its mtime), or (None, 0.0)."""
+    candidates = list(downloads.glob("maps_contributions*.json"))
+    if not candidates:
+        return None, 0.0
+    latest = max(candidates, key=lambda p: p.stat().st_mtime)
+    return latest, latest.stat().st_mtime
+
+
+def _wait_for_new_download(downloads: Path, old_mtime: float, timeout: int = 300) -> Path | None:
+    """Poll until a maps_contributions*.json newer than old_mtime appears. Returns its path."""
+    for elapsed in range(timeout):
+        time.sleep(1)
+        path, mtime = _latest_contributions_file(downloads)
+        if path and mtime > old_mtime:
+            return path
+        if elapsed > 0 and elapsed % 15 == 14:
+            remaining = timeout - elapsed - 1
+            print(f"  Waiting... ({elapsed + 1}s elapsed, {remaining}s remaining)")
+    return None
+
+
+def _try_browser_automation(contrib_url: str, downloads: Path, old_mtime: float) -> Path | None:
+    """
+    macOS only: open Chrome to contrib_url, inject harvester JS, wait for download.
+    Returns path to the new contributions file, or None if unavailable/failed.
+    """
+    if sys.platform != "darwin":
+        return None
+
+    js = _extract_harvester_js()
+    if not js:
+        print("  Could not extract harvester JS from tools/harvest_google_maps.html.")
+        return None
+
+    import tempfile
+    tf = tempfile.NamedTemporaryFile(mode="w", suffix=".js", delete=False, encoding="utf-8")
+    tf.write(js)
+    tf.close()
+
+    try:
+        print("Opening Google Chrome to your Maps contributions page...")
+        result = subprocess.run(
+            ["open", "-a", "Google Chrome", contrib_url],
+            capture_output=True, text=True,
+        )
+        if result.returncode != 0:
+            print("  Google Chrome not found.")
+            return None
+
+        print("Waiting for page to load (5s)...")
+        time.sleep(5)
+
+        # Read JS from temp file inside AppleScript to avoid quoting issues
+        safe_path = shlex.quote(tf.name)
+        applescript = (
+            'tell application "Google Chrome"\n'
+            '    activate\n'
+            f'    set jsCode to do shell script "cat {safe_path}"\n'
+            '    execute front window\'s active tab javascript jsCode\n'
+            'end tell'
+        )
+        inj = subprocess.run(
+            ["osascript", "-e", applescript],
+            capture_output=True, text=True, timeout=15,
+        )
+        if inj.returncode != 0:
+            print(f"  Script injection failed: {inj.stderr.strip()}")
+            return None
+
+        print("Harvester running — scrolling Photos + Reviews tabs (up to 90s)...")
+        return _wait_for_new_download(downloads, old_mtime, timeout=90)
+
+    except Exception as e:
+        print(f"  Automation error: {e}")
+        return None
+    finally:
+        try:
+            os.unlink(tf.name)
+        except Exception:
+            pass
+
+
+def _harvest_contributions(contrib_url: str) -> Path | None:
+    """
+    Harvest from Google Maps: attempt browser automation, then fall back to guided steps.
+    Returns path to the contributions JSON, or None on failure/timeout.
+    """
+    downloads = Path.home() / "Downloads"
+    _, old_mtime = _latest_contributions_file(downloads)
+
+    result = _try_browser_automation(contrib_url, downloads, old_mtime)
+    if result:
+        return result
+
+    # Guided fallback: open the tool, tell the user what to do, wait for any new file
+    tool_path = ROOT / "tools" / "harvest_google_maps.html"
+    print()
+    print("Automated harvesting unavailable. Complete these steps:")
+    print(f"  1. Open: {tool_path}")
+    print("  2. Drag the bookmarklet to your bookmarks bar (one-time setup)")
+    print(f"  3. Navigate to: {contrib_url}")
+    print("  4. Click the 'Harvest Photos + Reviews' bookmarklet")
+    print("  5. Wait 30-60s for maps_contributions.json to download to ~/Downloads")
+    print()
+    try:
+        subprocess.run(["open", str(tool_path)], check=True, capture_output=True)
+    except Exception:
+        pass
+    print("Watching ~/Downloads for maps_contributions*.json (5 min timeout)...")
+
+    result = _wait_for_new_download(downloads, old_mtime, timeout=300)
+    if result:
+        return result
+
+    print("Timed out. Run:  python3 manage.py sync ~/Downloads/maps_contributions.json")
+    return None
+
+
+def cmd_sync(args):
+    """One-shot sync: harvest from Google Maps, download images, rebuild gallery."""
+    json_path = None
+
+    if args.json_file:
+        json_path = Path(args.json_file).expanduser().resolve()
+        if not json_path.is_file():
+            print(f"Error: File not found: {json_path}")
+            return
+    else:
+        contrib_url = args.contrib_url or _extract_contrib_url()
+        if not contrib_url:
+            print("Error: No Maps contributions URL configured.")
+            print("Add your profile URL to tools/harvest_google_maps.html, or pass --contrib-url.")
+            return
+        print("=== Step 1: Harvesting from Google Maps ===")
+        json_path = _harvest_contributions(contrib_url)
+        if not json_path:
+            return
+
+    print("\n=== Step 2: Importing contributions ===")
+    if not _import_maps_file(json_path, args.category or "Public Art & Sculptures"):
+        return
+
+    print("\n=== Step 3: Downloading remote images ===")
+    _download_remote_images()
+
+    print("\n=== Step 4: Rebuilding gallery ===")
+    build_gallery.main()
+    print("\nSync complete.")
+
+
+def cmd_deduplicate(args):
+    """Remove entries whose image files are byte-for-byte identical to an earlier entry."""
+    import hashlib
+
+    photos = build_gallery.load_photos(ROOT)
+    hash_to_first: dict = {}
+    to_remove = []
+
+    for p in photos:
+        img_rel = p.get("image_path", "")
+        if build_gallery.is_remote_url(img_rel):
+            continue
+        img_path = ROOT / img_rel
+        if not img_path.is_file():
+            continue
+        digest = hashlib.md5(img_path.read_bytes()).hexdigest()
+        # Key on (hash, title, location) so the same image at a different
+        # place/title is treated as intentional reuse, not a duplicate.
+        dedup_key = (digest, _norm_title_key(p.get("title", "")), _norm_loc_key(p.get("location", "")))
+        if dedup_key in hash_to_first:
+            original = hash_to_first[dedup_key]
+            print(f"  duplicate: {p['id']}  ==  {original['id']}")
+            to_remove.append(p)
+        else:
+            hash_to_first[dedup_key] = p
+
+    if not to_remove:
+        print("No duplicate image files found.")
+        return
+
+    print(f"\n{len(to_remove)} duplicate entries found.")
+    if args.dry_run:
+        print("Dry run — no changes made. Re-run without --dry-run to apply.")
+        return
+
+    if not args.yes:
+        confirm = input(f"Delete {len(to_remove)} entries and their image files? [y/N]: ").strip().lower()
+        if confirm != "y":
+            print("Aborted.")
+            return
+
+    remove_ids = {p["id"] for p in to_remove}
+    for p in to_remove:
+        img_path = ROOT / p.get("image_path", "")
+        if img_path.is_file():
+            img_path.unlink()
+            print(f"  deleted {img_path.relative_to(ROOT)}")
+
+    kept = [p for p in photos if p["id"] not in remove_ids]
+    content = "# Photography Discoveries Catalog\n# Curated from Google Maps Local Guide contributions\n\nphotos:\n"
+    content += "\n\n".join(photo_to_yaml(p) for p in kept) + "\n"
+    DATA_FILE.write_text(content, encoding="utf-8")
+    print(f"\nRemoved {len(to_remove)} entries ({len(kept)} remaining).")
+    build_gallery.main()
+
+
 def cmd_harvest_guide(args):
     """Open the HTML harvester tool in the browser."""
-    import subprocess, os
     tool_path = ROOT / "tools" / "harvest_google_maps.html"
     print(f"Opening {tool_path}")
     print("Drag the bookmarklet to your bookmarks bar, then visit your Maps profile.")
@@ -824,6 +1142,25 @@ def main():
     # harvest-guide
     subparsers.add_parser("harvest-guide", help="Show 1-click harvester snippet for Google Maps profile")
 
+    # deduplicate
+    p_dedup = subparsers.add_parser("deduplicate", help="Remove entries whose image files are identical duplicates")
+    p_dedup.add_argument("--dry-run", action="store_true", help="Show what would be removed without deleting")
+    p_dedup.add_argument("--yes", action="store_true", help="Skip confirmation prompt")
+
+    # sync
+    p_sync = subparsers.add_parser(
+        "sync",
+        help="One-shot: import maps_contributions.json, download images, rebuild gallery",
+    )
+    p_sync.add_argument(
+        "json_file",
+        nargs="?",
+        default=None,
+        help="Path to maps_contributions.json (harvested automatically if omitted)",
+    )
+    p_sync.add_argument("--category", default="Public Art & Sculptures", help="Default category for new entries")
+    p_sync.add_argument("--contrib-url", default=None, help="Override Google Maps contributions URL")
+
     args = parser.parse_args()
 
     commands = {
@@ -835,6 +1172,8 @@ def main():
         "download-images": cmd_download_images,
         "scan-inbox": cmd_scan_inbox,
         "harvest-guide": cmd_harvest_guide,
+        "deduplicate": cmd_deduplicate,
+        "sync": cmd_sync,
     }
 
     commands[args.command](args)

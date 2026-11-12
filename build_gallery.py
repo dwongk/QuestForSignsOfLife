@@ -54,7 +54,11 @@ def parse_yaml_subset(text: str) -> list[dict]:
     def clean_val(v: str):
         v = v.strip()
         if v.startswith('"') and v.endswith('"'):
-            return v[1:-1].replace('\\"', '"')
+            try:
+                import json as _json
+                return _json.loads(v)
+            except Exception:
+                return v[1:-1].replace('\\"', '"')
         if v.startswith("'") and v.endswith("'"):
             return v[1:-1]
         return v
