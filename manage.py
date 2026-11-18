@@ -275,75 +275,34 @@ def _apply_update(target: dict, inc: dict):
 
 
 def upsert_photos(incoming_photos: list[dict]):
-    """Update existing entries or insert new ones, preventing duplicates.
+    """Update existing entries or insert new ones.
 
-    Matching priority:
-    1. Exact CDN fingerprint (maps_photo_id or CDN URL key)
-    2. Group-count matching by (title, location): incoming[i] → existing[i] in order,
-       preventing re-insertion of entries whose CDN URL changed to a local path.
+    Matches solely by CDN fingerprint (maps_photo_id or CDN URL key).
+    Unmatched entries are always treated as new; content deduplication
+    (MD5 after download) removes any that duplicate existing photo files.
     """
     if not incoming_photos:
         return
 
     existing = build_gallery.load_photos(ROOT) if DATA_FILE.exists() else []
 
-    # Index 1: by CDN fingerprint
     existing_by_fp: dict = {}
     for p in existing:
         fp = get_photo_fingerprint(p)
         if fp:
             existing_by_fp[fp] = p
 
-    # Index 2: by (title, location) → ordered list of existing entries
-    from collections import defaultdict
-    existing_by_tl: dict = defaultdict(list)
-    for p in existing:
-        key = (_norm_title_key(p.get("title")), _norm_loc_key(p.get("location")))
-        existing_by_tl[key].append(p)
-
-    # Group incoming by (title, location) to enable group-count matching
-    incoming_by_tl: dict = defaultdict(list)
-    for inc in incoming_photos:
-        key = (_norm_title_key(inc.get("title")), _norm_loc_key(inc.get("location")))
-        incoming_by_tl[key].append(inc)
-
     existing_ids = {p.get("id") for p in existing}
     merged = list(existing)
-    matched_ids: set = set()
     updated_count = 0
     added_count = 0
 
-    for (title_key, loc_key), group in incoming_by_tl.items():
-        # Pass 1: match each incoming entry by CDN fingerprint
-        unmatched_incoming = []
-        for inc in group:
-            fp = get_photo_fingerprint(inc)
-            if fp and fp in existing_by_fp:
-                target = existing_by_fp[fp]
-                _apply_update(target, inc)
-                matched_ids.add(target.get("id"))
-                updated_count += 1
-            else:
-                unmatched_incoming.append(inc)
-
-        if not unmatched_incoming:
-            continue
-
-        # Pass 2: group-count matching for entries without a CDN fingerprint match
-        # (handles existing entries whose image_path was switched from CDN to local)
-        unmatched_existing = [
-            p for p in existing_by_tl.get((title_key, loc_key), [])
-            if p.get("id") not in matched_ids
-        ]
-
-        n_pair = min(len(unmatched_incoming), len(unmatched_existing))
-        for i in range(n_pair):
-            _apply_update(unmatched_existing[i], unmatched_incoming[i])
-            matched_ids.add(unmatched_existing[i].get("id"))
+    for inc in incoming_photos:
+        fp = get_photo_fingerprint(inc)
+        if fp and fp in existing_by_fp:
+            _apply_update(existing_by_fp[fp], inc)
             updated_count += 1
-
-        # Any surplus incoming entries are genuinely new — insert them
-        for inc in unmatched_incoming[n_pair:]:
+        else:
             cdn_id = _cdn_photo_id(inc.get("image_path") or inc.get("image_url") or "")
             if cdn_id:
                 inc["maps_photo_id"] = cdn_id
@@ -1082,6 +1041,10 @@ def auto_deduplicate(photos: list = None, silent: bool = False) -> int:
             original = hash_to_first[dedup_key]
             if not silent:
                 print(f"  Auto-filtered duplicate: {p['id']} (identical to {original['id']})")
+            # Update survivor's CDN key so future syncs can fingerprint-match it
+            removed_fp = p.get("maps_photo_id") or _cdn_photo_id(p.get("image_path", ""))
+            if removed_fp:
+                original["maps_photo_id"] = removed_fp
             to_remove.append(p)
         else:
             hash_to_first[dedup_key] = p
