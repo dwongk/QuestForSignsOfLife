@@ -5,6 +5,7 @@ photos:
   - id: the-baltimore-convention-ctr
     title: "The Baltimore Convention Ctr"
     category: "Travel Discoveries"
+    place_type: "Convention center"
     location: "1 W Pratt St, Baltimore, MD 21201"
     maps_url: "https://www.google.com/maps/search/?api=1&query=The%20Baltimore%20Convention%20Ctr%201%20W%20Pratt%20St%2C%20Baltimore%2C%20MD%2021201"
     maps_photo_id: AAjk-CP9ZSu3hE-myMguJW295pW7r9AMSa9XPpScPTJ2pWAYFyg8uJ5XZCBnbNuV0ZfyQOkYEMsuxyBNO2L7k4IN1qH3F52du3KNNcouCOAAT6uEiHsSvg88e0_-2p3uXoNLcq0hNY2P4YZhBSXJ
@@ -15,6 +16,7 @@ photos:
   - id: restaurante-o-castelo
     title: "Restaurante O Castelo"
     category: "Travel Discoveries"
+    place_type: "Restaurant"
     location: "R. do Castelo 11, 8000-149 Faro, Portugal"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Restaurante%20O%20Castelo%20R.%20do%20Castelo%2011%2C%208000-149%20Faro%2C%20Portugal"
     maps_photo_id: AAjk-CNrNHg8lSHr8GCtvITZFzjWGT6518H20tdCwtm0k4hx9QEPMVJkHpbAGVSvYn5_sgIY5Zk4EHISW_ctIkjCOxmpLbieZtVdP-Rv9XVn7s8q8hcrsnwbgZSPkJSaJbcMNPWsJ0Tcx6uGY0c
@@ -25,6 +27,7 @@ photos:
   - id: monumento-atl-ntida-e-ao-povo-atlante
     title: "Monumento à Atlântida e ao povo atlante"
     category: "Public Art & Sculptures"
+    place_type: "Monument"
     location: "Parque Ribeirinho, Faro, Portugal"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Monumento%20%C3%A0%20Atl%C3%A2ntida%20e%20ao%20povo%20atlante%20Parque%20Ribeirinho%2C%20Faro%2C%20Portugal"
     maps_photo_id: AAjk-CN2QWorZVC8qJDemVWzNJjouZ2eU8WaqMHncngwdgsqJ_LA4QSY930_LeWc2m8mKQiofprJNxa-buB5P2wU3T4BNj0Gw3gPIpxnu1ha20TNHRcPLHL8fkjckJZ5g1oco6gVHAkAR7-qN-8
@@ -35,6 +38,7 @@ photos:
   - id: corozal-sign
     title: "Corozal sign"
     category: "Signs and Wonders"
+    place_type: "Tourist attraction"
     location: "9JR7+3P6, 1st Ave, Corozal, Belize"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Corozal%20sign%209JR7%2B3P6%2C%201st%20Ave%2C%20Corozal%2C%20Belize"
     maps_photo_id: AAjk-COKxuFqebQ-mh_BVLqhtmzTkcqo5caYF5CgnfxXjPfnj3wSBeXLsdYpM36ru6lWB78YU1S7q2UWDRhKzVBbibRapD5tcKCn6canmUo_GQwpQSYa-YMNK_uqXswCbCLWDGjWUztqqR_fWYLJ
@@ -45,6 +49,7 @@ photos:
   - id: corozal-sign-2
     title: "Corozal sign"
     category: "Signs and Wonders"
+    place_type: "Tourist attraction"
     location: "9JR7+3P6, 1st Ave, Corozal, Belize"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Corozal%20sign%209JR7%2B3P6%2C%201st%20Ave%2C%20Corozal%2C%20Belize"
     maps_photo_id: AAjk-CPWB-rgJSN3yF-_jy5s-BLd9wr4_PyR3kNX-3zNX5Xnr3lN-MdWt-V13EKjvbu0lQFRQKtQBi7JQULl8MqaHAWpZXPBHHOqjZmu0SPXGSSrXiczvZ1leQvrZDcYSiKaA66YQrHo6AXsZ1su
@@ -55,6 +60,7 @@ photos:
   - id: obra-d-a-y-noche---antonio-l-pez
     title: "Obra Día y Noche - Antonio López"
     category: "Public Art & Sculptures"
+    place_type: "Sculpture"
     location: "Av. de la Ciudad de Barcelona, 3, Arganzuela, 28007 Madrid, Spain"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Obra%20D%C3%ADa%20y%20Noche%20-%20Antonio%20L%C3%B3pez%20Av.%20de%20la%20Ciudad%20de%20Barcelona%2C%203%2C%20Arganzuela%2C%2028007%20Madrid%2C%20Spain"
     maps_photo_id: AAjk-CMfeIFGKmCMcLZ-oEr2upN_bc7q6oY97Kiwrx6a5DEkfVnOcmvyA2QlMqP-2kC2qmfgGBLuzNqRN_D1HEkUCTdr53JuugfeXCNfcIXzw1JwRnBYbmqZB3XgRmojUw0exZJ3NVjSGu2nwiUt
@@ -65,6 +71,7 @@ photos:
   - id: lincoln-memorial-sculpture
     title: "Lincoln Memorial Sculpture"
     category: "Public Art & Sculptures"
+    place_type: "Sculpture"
     location: "406 E River Rd, Louisville, KY 40206"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Lincoln%20Memorial%20Sculpture%20406%20E%20River%20Rd%2C%20Louisville%2C%20KY%2040206"
     maps_photo_id: AAjk-CMPawB6WTe38qMA4xdZNYMLlSqXAbfCTFTluFUs5hCeEnmH1E74GqiYUhVhWqqosxteaMDTF0TpN7asmEVPYgOYS1kNbVHvK4XdSIb1IMmtEnoMrvR7UsrsZtSSbiGtYCe5W37KATePnH0
@@ -75,6 +82,7 @@ photos:
   - id: i-love-roc-sign
     title: "I Love ROC Sign"
     category: "Signs and Wonders"
+    place_type: "Tourist attraction"
     location: "291 E Main St, Rochester, NY 14604"
     maps_url: "https://www.google.com/maps/search/?api=1&query=I%20Love%20ROC%20Sign%20291%20E%20Main%20St%2C%20Rochester%2C%20NY%2014604"
     maps_photo_id: AAjk-CM8KYmKiLp0MiSwAC6FuOkLXSrTQjBiO-EUscapt0j7YMRgjlSVErSkPIpMnr0G0Cs_oKb2U6DC0fu4FuWjYFho4dKYRMMmEx2eGrLPEd21aFp5IM5y9-iFVqvVMhe-J6zjiKpfI3icJsXl
@@ -85,6 +93,7 @@ photos:
   - id: corozal-sign-3
     title: "Corozal sign"
     category: "Signs and Wonders"
+    place_type: "Tourist attraction"
     location: "9JR7+3P6, 1st Ave, Corozal, Belize"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Corozal%20sign%209JR7%2B3P6%2C%201st%20Ave%2C%20Corozal%2C%20Belize"
     maps_photo_id: AAjk-CMgikNJJCIjVZKuNB2JJTO52DH4iq69HOa2ILrqF1lnR5jRlYmcknEXGIKwL0xfK4fGHLwZOiUugb1sYicSE54QlX8-VN5u_oGKL9LyfgwhWFlVpFKANIGHMDB0bRJI8nU_k2zH4KzQjVV3
@@ -95,6 +104,7 @@ photos:
   - id: corozal-sign-4
     title: "Corozal sign"
     category: "Signs and Wonders"
+    place_type: "Tourist attraction"
     location: "9JR7+3P6, 1st Ave, Corozal, Belize"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Corozal%20sign%209JR7%2B3P6%2C%201st%20Ave%2C%20Corozal%2C%20Belize"
     maps_photo_id: AAjk-CP8W8PYKWvZzTbh4JBEJSPVUp51D23akqUgGPWVPQMe5CQtAZAEHNe5YBn3m3-p1g9GmUWtzMuOE1G8l3c9oOGCiH46wfo6oLRJ5PT-OOxA4LR3Fxhjecbca-RCH3-RtapoltfUH-gGcLc
@@ -105,6 +115,7 @@ photos:
   - id: dr-mlk-jr-sign
     title: "Dr MLK Jr sign"
     category: "Signs and Wonders"
+    place_type: "Tourist attraction"
     location: "1833 Dr. Martin Luther King Jr. Blvd, Kansas City, MO 64130"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Dr%20MLK%20Jr%20sign%201833%20Dr.%20Martin%20Luther%20King%20Jr.%20Blvd%2C%20Kansas%20City%2C%20MO%2064130"
     maps_photo_id: AAjk-COdUYfx9IzAdLHPas7XiCMCGmrZSd5eD-5Fo2k8WNqcaWYJptxblGuUKEtDVgvYky9HBdIH1kilcqJk2TmPowe2hLCkKCo_unbV5WGsteZwvuNHeJaSTTFZMZfnxg4ePyxU4UWqw2ZbDR4
@@ -115,6 +126,7 @@ photos:
   - id: arrival-sculpture
     title: "\"Arrival\" Sculpture"
     category: "Public Art & Sculptures"
+    place_type: "Sculpture"
     location: "RW9Q+VM, Milford, NE 68405"
     maps_url: "https://www.google.com/maps/search/?api=1&query=%22Arrival%22%20Sculpture%20RW9Q%2BVM%2C%20Milford%2C%20NE%2068405"
     maps_photo_id: AAjk-COENW4mG1HSrliN8vBqT71kWOG83FFdp2pLAqhLVhZuXmCF0wgtpZfG3tHcjD_5alHNm_95eeZ93UhfptkJOU0FOpKXTfFJ5btCFUIDkEyCfZDrLKanSQJvP5Sp8uw4xnyXzWd4BFd6xhg
@@ -125,6 +137,7 @@ photos:
   - id: arrival-sculpture-2
     title: "\"Arrival\" Sculpture"
     category: "Public Art & Sculptures"
+    place_type: "Sculpture"
     location: "RW9Q+VM, Milford, NE 68405"
     maps_url: "https://www.google.com/maps/search/?api=1&query=%22Arrival%22%20Sculpture%20RW9Q%2BVM%2C%20Milford%2C%20NE%2068405"
     maps_photo_id: AAjk-CMU-M4kCgssf5mSVYglHiAlj2r9Qo09aM33QJXdocC3d0CTrfAvZbsLO73ogORzmD42m6iqDoJnVZ2KIM30JJfJkVDhEKS1iQPusIPEUU22N5DjtSth6WuhpC_sVHhPpa5JVKiZPmNbi52r
@@ -135,6 +148,7 @@ photos:
   - id: dangriga-sign
     title: "Dangriga sign"
     category: "Signs and Wonders"
+    place_type: "Tourist attraction"
     location: "XQ8J+68M Alejo Beni Park, Sharp St, Dangriga, Belize"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Dangriga%20sign%20XQ8J%2B68M%20Alejo%20Beni%20Park%2C%20Sharp%20St%2C%20Dangriga%2C%20Belize"
     maps_photo_id: AAjk-CONe18SzMk9fUIQMHh2g07hlpsD05oAqq3wcBPB1wZapmN-9F08eErlIUJSWSDxfEaj2hYpwUKHZmbLbo1kwDUdluEzBULaqRSOnOuD7Yd4489URw_i8hmpZS33FX16lMWb84B9GMMbPOOH
@@ -145,6 +159,7 @@ photos:
   - id: arrival-sculpture-3
     title: "\"Arrival\" Sculpture"
     category: "Public Art & Sculptures"
+    place_type: "Sculpture"
     location: "RW9Q+VM, Milford, NE 68405"
     maps_url: "https://www.google.com/maps/search/?api=1&query=%22Arrival%22%20Sculpture%20RW9Q%2BVM%2C%20Milford%2C%20NE%2068405"
     maps_photo_id: AAjk-CNlpDRCLrp1sOkRQGV9TusOOH8vWvI9snQxtLe2JLy-mzMbTzR1aZoPWy4oj1E0mh3FCt2Y1g7o5Do7uP5kYJ9eLZWUqzjwRwEhk-AMrHrUqnGVVx-w2SOEN-ruTgn8_AEV0xPyyDMKOvwY
@@ -155,6 +170,7 @@ photos:
   - id: arrival-sculpture-4
     title: "\"Arrival\" Sculpture"
     category: "Public Art & Sculptures"
+    place_type: "Sculpture"
     location: "RW9Q+VM, Milford, NE 68405"
     maps_url: "https://www.google.com/maps/search/?api=1&query=%22Arrival%22%20Sculpture%20RW9Q%2BVM%2C%20Milford%2C%20NE%2068405"
     maps_photo_id: AAjk-CNf3kXckMOCJSEJ_BbU4BtpbgUQPQikxnhP9V7v2FnTdtmOjc8lE8wdBbtWyfMBbSqDBfXuK6oeiwn0E2hB0Q5mkyPISgt6jSOtWvD_6SWlyVU0mptu72ZpsU01z_1SQtexY8looOkKH0E
@@ -165,6 +181,7 @@ photos:
   - id: arrival-sculpture-5
     title: "\"Arrival\" Sculpture"
     category: "Public Art & Sculptures"
+    place_type: "Sculpture"
     location: "RW9Q+VM, Milford, NE 68405"
     maps_url: "https://www.google.com/maps/search/?api=1&query=%22Arrival%22%20Sculpture%20RW9Q%2BVM%2C%20Milford%2C%20NE%2068405"
     maps_photo_id: AAjk-CNvT3P9WoyljLJ3yWlPN9cgjWPkrlUtdSRshp61CrflrGb-ovfk15WHvOx_DB9jrAWvWfZ9cy4zSgBNUENd83e-NoQt1o1O2lzHG85_h46RL7YHrqhOig1GLzuKkIIncJiAvY_nhI5sJuyV
@@ -175,6 +192,7 @@ photos:
   - id: dangriga-sign-2
     title: "Dangriga sign"
     category: "Signs and Wonders"
+    place_type: "Tourist attraction"
     location: "XQ8J+68M Alejo Beni Park, Sharp St, Dangriga, Belize"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Dangriga%20sign%20XQ8J%2B68M%20Alejo%20Beni%20Park%2C%20Sharp%20St%2C%20Dangriga%2C%20Belize"
     maps_photo_id: AAjk-COJvEL5R-2SrD_KX-31B9YagfiNpQLz-3zA8mn5AdJ13tfRzkC9QKoRv1OxnLJH7MbhGM8bzIwABbQYSL5JYs_qI8vyohDXIal4DZidGJW7boDNVmSi1XgJkpu4mtbZPxddq6Jj7y5GL1ek
@@ -185,6 +203,7 @@ photos:
   - id: dangriga-sign-3
     title: "Dangriga sign"
     category: "Signs and Wonders"
+    place_type: "Tourist attraction"
     location: "XQ8J+68M Alejo Beni Park, Sharp St, Dangriga, Belize"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Dangriga%20sign%20XQ8J%2B68M%20Alejo%20Beni%20Park%2C%20Sharp%20St%2C%20Dangriga%2C%20Belize"
     maps_photo_id: AAjk-CMY41CG59tmDVBCLdvQCH-GzYRU1s0JlS0ywz8iM2L8x9CuBdTLMjeXBpKtEZeplngAN_djb4EkWUgjzA7nPCgo_UKbXpad5WDwuOVng3fFta8qFK5IUdeJL3MGlm-s8bHMyV_w7smbEWw
@@ -195,6 +214,7 @@ photos:
   - id: fulcrum-i-sculpture
     title: "\"Fulcrum I\" Sculpture"
     category: "Public Art & Sculptures"
+    place_type: "Sculpture"
     location: "3913 Savannah Square St NW, Suwanee, GA 30024"
     maps_url: "https://www.google.com/maps/search/?api=1&query=%22Fulcrum%20I%22%20Sculpture%203913%20Savannah%20Square%20St%20NW%2C%20Suwanee%2C%20GA%2030024"
     maps_photo_id: AAjk-COGjvvQUEAexKocsLSxRfJI3ZZKO0d0giPdQf37ukjuvEe_DBTffy6jL6Yj3NVb0g6riTswaepgG79Wx5rJvEVywLsw2EjnqY1NpDPTs2f3nsAio7n-g-dQVc6xAaOBEcTaCXzipKdfh6S4
@@ -205,6 +225,7 @@ photos:
   - id: fulcrum-i-sculpture-2
     title: "\"Fulcrum I\" Sculpture"
     category: "Public Art & Sculptures"
+    place_type: "Sculpture"
     location: "3913 Savannah Square St NW, Suwanee, GA 30024"
     maps_url: "https://www.google.com/maps/search/?api=1&query=%22Fulcrum%20I%22%20Sculpture%203913%20Savannah%20Square%20St%20NW%2C%20Suwanee%2C%20GA%2030024"
     maps_photo_id: AAjk-CPU0PUAs7uOUmyxUX8y5y3LoGYHD4z36E8OuwXmU8ccKlPdZzNPusM3GNCAlgYlRY53TynDcVF8bUAsezxVbbHa__JgJfpJ9RlY3wIOu5PoqMcNFc2ZVzQIPdFU1kyo_oLxvAQJKuyiQ88X
@@ -215,6 +236,7 @@ photos:
   - id: hammer-nails-suwanee
     title: "Hammer & Nails Suwanee"
     category: "Travel Discoveries"
+    place_type: "Nail salon"
     location: "Near 340, Town Center Ave A10, Suwanee, GA 30024"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Hammer%20%26%20Nails%20Suwanee%20Near%20340%2C%20Town%20Center%20Ave%20A10%2C%20Suwanee%2C%20GA%2030024"
     maps_photo_id: AAjk-COhltciPE7K4sbJdG_iS5EvAmqMf09enH8hEb5sWCLXjvRqSLwz3_sq_4b6yDC5Rat47F8QO8z7S-Yacb-cfvCOQTdHfoyw5ORdtrE1IzNvrxnQ28Ml1t_pC6DMpo9_-K0Qlud8JFNWiTuj
@@ -225,6 +247,7 @@ photos:
   - id: friends-sculpture
     title: "\"Friends\" Sculpture"
     category: "Public Art & Sculptures"
+    place_type: "Sculpture"
     location: "330 Town Center Ave, Suwanee, GA 30024"
     maps_url: "https://www.google.com/maps/search/?api=1&query=%22Friends%22%20Sculpture%20330%20Town%20Center%20Ave%2C%20Suwanee%2C%20GA%2030024"
     maps_photo_id: AAjk-CMIYPay86MnUbfyabM3_AQmvF2wHvhqcogU5pg5HW1L61_4V-7KwlhMtR-YilT-WNUx_0Rx2U7UpVSxkK9Y9Luy4s60PuUFPUYzgqnTVMSoUr47jfMTSiJ3jYUmT02HHUBymv8RQhthkPQQ
@@ -235,6 +258,7 @@ photos:
   - id: friends-sculpture-2
     title: "\"Friends\" Sculpture"
     category: "Public Art & Sculptures"
+    place_type: "Sculpture"
     location: "330 Town Center Ave, Suwanee, GA 30024"
     maps_url: "https://www.google.com/maps/search/?api=1&query=%22Friends%22%20Sculpture%20330%20Town%20Center%20Ave%2C%20Suwanee%2C%20GA%2030024"
     maps_photo_id: AAjk-CPENrdmJKE-UoSSH7LUT8AxdT8wjrYF0B1-GBuimJrUvPcsADwgp3cCDPZg8MQzNgko0lFA_vHx6O0py72VXGw7ah9UxzK10YSo84Rq_D7IcZDuj-VznCbN6dNEw80Z_mrVoSIraGS8N_3X
@@ -245,6 +269,7 @@ photos:
   - id: peachtree-dentures-and-implants
     title: "Peachtree Dentures and Implants"
     category: "Travel Discoveries"
+    place_type: "Dentist"
     location: "5901 Peachtree Dunwoody Rd NE Building B Ste 250, Atlanta, GA 30328"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Peachtree%20Dentures%20and%20Implants%205901%20Peachtree%20Dunwoody%20Rd%20NE%20Building%20B%20Ste%20250%2C%20Atlanta%2C%20GA%2030328"
     maps_photo_id: AAjk-CMJ7x7KGapaxISC5FP0zaV6C3VdTa_HinYpE0mDOiRCKXSG3UbrmIdFUTgUF3HYGwCgbpciVpmR3-qfrpGnBoIV5AwykwzOnlQQIy-rjpSQskkqUPEYq0yHx1hodJ4hXj02-MFxlO1daQOQ
@@ -255,6 +280,7 @@ photos:
   - id: suwanee-city-hall
     title: "Suwanee City Hall"
     category: "Travel Discoveries"
+    place_type: "City hall"
     location: "330 Town Center Ave, Suwanee, GA 30024"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Suwanee%20City%20Hall%20330%20Town%20Center%20Ave%2C%20Suwanee%2C%20GA%2030024"
     maps_photo_id: AAjk-CM91wkl8VGs3zAZSyFxkOR8dLtmGLEfqTr5yt2zmEBXpT76N6R1bpGSTR95QY8rXgBxvf3d2A_vbc6s__tTcjIyS5cXtQOM0dHGacwuG9Ak3F03CCDx8_1TlzE9noj6--6B8vheQ60aYcgG
@@ -265,6 +291,7 @@ photos:
   - id: suwanee-city-hall-2
     title: "Suwanee City Hall"
     category: "Travel Discoveries"
+    place_type: "City hall"
     location: "330 Town Center Ave, Suwanee, GA 30024"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Suwanee%20City%20Hall%20330%20Town%20Center%20Ave%2C%20Suwanee%2C%20GA%2030024"
     maps_photo_id: AAjk-CO-6qf5Ko07dvDtCoGcNE08rLVSQmfV1tvd91xRiv5EyXrXx8gZZpr4OCF__we6vKYnq-uPplUCINH1B_2fP84MW7Geeuiy1um6xRji7aqmCFjjOY_GPYOwJ0RhAFBxKYRte9eBx9p_Jx_k
@@ -275,6 +302,7 @@ photos:
   - id: suwanee-city-hall-3
     title: "Suwanee City Hall"
     category: "Travel Discoveries"
+    place_type: "City hall"
     location: "330 Town Center Ave, Suwanee, GA 30024"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Suwanee%20City%20Hall%20330%20Town%20Center%20Ave%2C%20Suwanee%2C%20GA%2030024"
     maps_photo_id: AAjk-CPYg4OxMdp9XXGPLwd10P06qZX59FRoUwhC0Av1TdiT7_5RZfGxNh8_FueWFsWCbuoj8jEu3smnxNGSJBS5Tgx_XikoPEnZfqJuXumZx8yZnc0Qzv2uPVyaQ_2_rQZdemlmRNulSvKL2IHG
@@ -285,6 +313,7 @@ photos:
   - id: suwanee-city-hall-4
     title: "Suwanee City Hall"
     category: "Travel Discoveries"
+    place_type: "City hall"
     location: "330 Town Center Ave, Suwanee, GA 30024"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Suwanee%20City%20Hall%20330%20Town%20Center%20Ave%2C%20Suwanee%2C%20GA%2030024"
     maps_photo_id: AAjk-CNh_Pa6ASlN6hQ1dgndEb32-_vSigl-Xo2k7w63YP6zD-AIiaKTbEbsgDu3J397-A31vQBXIGtvBLoTIbpoOSjBli3AbAyHJ9i4sYoUd1AM9zB0REsXsLaobSear0HeVvatFrkJv2rnZY85
@@ -295,6 +324,7 @@ photos:
   - id: gwinnett-dental-studio---dr-titus-wongk
     title: "Gwinnett Dental Studio - Dr Titus Wongk"
     category: "Travel Discoveries"
+    place_type: "Dentist"
     location: "530 Highland Station Dr Ste 1006, Suwanee, GA 30024"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Gwinnett%20Dental%20Studio%20-%20Dr%20Titus%20Wongk%20530%20Highland%20Station%20Dr%20Ste%201006%2C%20Suwanee%2C%20GA%2030024"
     maps_photo_id: AAjk-CMdmrhldWlTk5DSIFggVM2NKG5ux2TVI6vXJKk0idA-rAhJWx7Xx2CRxZk6AbPVgbGXiaOaLe1otSMgQYVCrf9GoSMs4Jfn5EyA3ifp9lDB3gvxTcu7txPSj8pO_DcAyie37k8XJ9_3v-6N
@@ -305,6 +335,7 @@ photos:
   - id: gwinnett-dental-studio---dr-titus-wongk-2
     title: "Gwinnett Dental Studio - Dr Titus Wongk"
     category: "Travel Discoveries"
+    place_type: "Dentist"
     location: "530 Highland Station Dr Ste 1006, Suwanee, GA 30024"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Gwinnett%20Dental%20Studio%20-%20Dr%20Titus%20Wongk%20530%20Highland%20Station%20Dr%20Ste%201006%2C%20Suwanee%2C%20GA%2030024"
     maps_photo_id: AAjk-CNvO5lTQDsJfLrgmXVG1z8jv9M_ppBmCvEg4Mcj4Hruk4zYm0HUc1PRlrINV6WA5-TH9q3uU7CqCSmt5VPTDWE326dMR61hT7mP9mjKehMi7ECJkkXTqepard3UO84JsOt3MgLbbImRgtjr
@@ -315,6 +346,7 @@ photos:
   - id: gwinnett-dental-studio---dr-titus-wongk-3
     title: "Gwinnett Dental Studio - Dr Titus Wongk"
     category: "Travel Discoveries"
+    place_type: "Dentist"
     location: "530 Highland Station Dr Ste 1006, Suwanee, GA 30024"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Gwinnett%20Dental%20Studio%20-%20Dr%20Titus%20Wongk%20530%20Highland%20Station%20Dr%20Ste%201006%2C%20Suwanee%2C%20GA%2030024"
     maps_photo_id: AAjk-CMZT0U85IZPcd20Ocu-clVjPFP42dh4i3j4Y0OJE4gEmEO3WHxwwN7C30-7XvBO-ZwWeW1rHr2WMLD5deWP1vFmPmQDHC9XcWPvOs2EvB8lSbSy-IMm9OjPTr6Bx6i8pQgYALSOzZrCn5zC
@@ -325,6 +357,7 @@ photos:
   - id: steel-columns-sculpture
     title: "Steel Columns Sculpture"
     category: "Public Art & Sculptures"
+    place_type: "Sculpture"
     location: "Atlanta, GA 30306"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Steel%20Columns%20Sculpture%20Atlanta%2C%20GA%2030306"
     maps_photo_id: AAjk-CODFPkOwfcVsMfLeV9Zi0P-GZbrINK28f7CeBJsmep8qd3-m_g3PNv2NFccpIblOcO-OeW7tAJk7-pGt1gKRdw_80xZWXQVSOodia9eUNelmiWpkNmcyuutWtDrS38gFoAdClK989DqoEWv
@@ -335,6 +368,7 @@ photos:
   - id: w-e-b-du-bois-monument
     title: "W.E.B Du Bois Monument"
     category: "Public Art & Sculptures"
+    place_type: "Monument"
     location: "231 Main St, Great Barrington, MA 01230"
     maps_url: "https://www.google.com/maps/search/?api=1&query=W.E.B%20Du%20Bois%20Monument%20231%20Main%20St%2C%20Great%20Barrington%2C%20MA%2001230"
     maps_photo_id: AAjk-CPkKwt6ODgBMlK8zkX8ihh9eDmWIDfr1WYbfGA2ED1xNqMrjm_JinhtprwEnGfqRIBtyikMiuUcabdi4fALq1eEi8ZzUUywlJrmgpeA30YWjTJx6n8KrCGM37AjSQZvnTxWJCUxzPgBsNKZ
@@ -345,6 +379,7 @@ photos:
   - id: w-e-b-du-bois-monument-2
     title: "W.E.B Du Bois Monument"
     category: "Public Art & Sculptures"
+    place_type: "Monument"
     location: "231 Main St, Great Barrington, MA 01230"
     maps_url: "https://www.google.com/maps/search/?api=1&query=W.E.B%20Du%20Bois%20Monument%20231%20Main%20St%2C%20Great%20Barrington%2C%20MA%2001230"
     maps_photo_id: AAjk-CO8nDIczi7Nbbe0aLOCekzRHXkBFvyFsUhsZWWXvmlgCGoItUAKdqYmhOjnqJ_tLchQfIsmggdiGCnp6pZPflAWb1zAuC4gtVmZiLKh3Xa0QXx-9CIxuNu-iE5o8vCi-uNaQGtLt93NUdo
@@ -355,6 +390,7 @@ photos:
   - id: letras-madrid
     title: "Letras Madrid"
     category: "Signs and Wonders"
+    place_type: "Tourist attraction"
     location: "Autop. de Circunvalación M-30, Moncloa - Aravaca, 28011 Madrid, Spain"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Letras%20Madrid%20Autop.%20de%20Circunvalaci%C3%B3n%20M-30%2C%20Moncloa%20-%20Aravaca%2C%2028011%20Madrid%2C%20Spain"
     maps_photo_id: AAjk-CNHk2A1ymjUxyDmmlKP2iICjYODqwH7N6bihZ8zUvgDyOsZ-x7K7nkgYbok3M7H-l_-Oogpbo2CGphkNk_oC_9gCDudTY_Bqag-bneT0ei-Yw_Kz3RpFnBcv5xGuSbdmTiDv06n
@@ -365,6 +401,7 @@ photos:
   - id: letras-madrid-2
     title: "Letras Madrid"
     category: "Signs and Wonders"
+    place_type: "Tourist attraction"
     location: "Autop. de Circunvalación M-30, Moncloa - Aravaca, 28011 Madrid, Spain"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Letras%20Madrid%20Autop.%20de%20Circunvalaci%C3%B3n%20M-30%2C%20Moncloa%20-%20Aravaca%2C%2028011%20Madrid%2C%20Spain"
     maps_photo_id: AAjk-CMY6PB3iIkpz11AsqRr0agvLBa9DwoLR4cPJyk1Nznryr5JIdtvtgeqBuxksonJ7Vxw5tfZtBWnUXdK4lJE_fdcDPXFKKErq9lu06HbzPNY1luR4k3c3qP4VobUiH3ftwQh5wwc
@@ -375,6 +412,7 @@ photos:
   - id: letras-madrid-3
     title: "Letras Madrid"
     category: "Signs and Wonders"
+    place_type: "Tourist attraction"
     location: "Autop. de Circunvalación M-30, Moncloa - Aravaca, 28011 Madrid, Spain"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Letras%20Madrid%20Autop.%20de%20Circunvalaci%C3%B3n%20M-30%2C%20Moncloa%20-%20Aravaca%2C%2028011%20Madrid%2C%20Spain"
     maps_photo_id: AAjk-CNLTr__xGO8bmymvJtNbJnD_VR3Mc7dE1OXQBJ59MMQcLOqPvpvwTI4t6pdDhEOZFwb9xNaVPRkRAJEkkME0MVh4an_JTYrbhQn-ovIC1wh3nD58po7C_CYHOZoxNRBEKdG47YijA
@@ -385,6 +423,7 @@ photos:
   - id: santa-cruz-sign
     title: "Santa Cruz Sign"
     category: "Signs and Wonders"
+    place_type: "Tourist attraction"
     location: "Plaza de España, 38003 Santa Cruz de Tenerife, Spain"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Santa%20Cruz%20Sign%20Plaza%20de%20Espa%C3%B1a%2C%2038003%20Santa%20Cruz%20de%20Tenerife%2C%20Spain"
     maps_photo_id: AAjk-CNgkowUdM78tL-3KP01JTYvxreMRVAtccMnP10nuEheNjTBbMnmAdNim7BO796EJKE7_d2ZK17dD5T09a1a19IH1f8c0mSP8ItB4IZ5Is_GIhQqh0AmCbzmD_sS6lZHTelF-LQ2
@@ -395,6 +434,7 @@ photos:
   - id: letras-i-love-sevilla
     title: "Letras \"I Love Sevilla\""
     category: "Signs and Wonders"
+    place_type: "Tourist attraction"
     location: "Pl. de la Encarnación, Casco Antiguo, 41003 Sevilla, Spain"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Letras%20%22I%20Love%20Sevilla%22%20Pl.%20de%20la%20Encarnaci%C3%B3n%2C%20Casco%20Antiguo%2C%2041003%20Sevilla%2C%20Spain"
     maps_photo_id: AAjk-CMcXEDesQKdYPQsvI7sDmHBRSEgPPkVuAjBWE4QwYDbKSBIbmE2G7IedJhTNdJ79anA2F2KycYTejN9-dToAxsl79Zj3hW4OpADFkVLTQqWj5dsypXtgWCYeuh0hvEq_LGhkh9W
@@ -405,6 +445,7 @@ photos:
   - id: faro-sign
     title: "\"FARO\" Sign"
     category: "Signs and Wonders"
+    place_type: "Tourist attraction"
     location: "Praça Dom Francisco Gomes 5, 8000-168 Faro, Portugal"
     maps_url: "https://www.google.com/maps/search/?api=1&query=%22FARO%22%20Sign%20Pra%C3%A7a%20Dom%20Francisco%20Gomes%205%2C%208000-168%20Faro%2C%20Portugal"
     maps_photo_id: AAjk-CNc3wpCCcOt9dkHtdOol_KIOIb5IjuL-qX-nklDGoV_U20FPYWMv6YPeDPtKw2_JXXAy4T1oQdQ8sbg2n7DLVbpgv_rfdvK9AvBvn3KMTrwO-bUwZ5pnbhRiuWedtcLa_ZEx1Vesg
@@ -415,6 +456,7 @@ photos:
   - id: martin-luther-king-jr-park
     title: "Martin Luther King, Jr. Park"
     category: "Travel Discoveries"
+    place_type: "Park"
     location: "Woodland Ave &, Dr. Martin Luther King Jr. Blvd, Kansas City, MO 64130"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Martin%20Luther%20King%2C%20Jr.%20Park%20Woodland%20Ave%20%26%2C%20Dr.%20Martin%20Luther%20King%20Jr.%20Blvd%2C%20Kansas%20City%2C%20MO%2064130"
     maps_photo_id: AAjk-COUV6lRUdZzx4d0E7HgAPWDCRzcUEhLwKoLgZN4Q8mjasruF8JqGDYBFFbUrM1hIwGUw8lgYx6uD_xjrc5HJrUnA-ThT_1O1DHIhX1E7bgy3-mkIAjvp4WJbdh0HH4MR9Mw6XA2
@@ -425,6 +467,7 @@ photos:
   - id: placencia-sign
     title: "Placencia Sign"
     category: "Signs and Wonders"
+    place_type: "Tourist attraction"
     location: "GJFJ+VQF North Village, Main Road, Placencia, Belize"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Placencia%20Sign%20GJFJ%2BVQF%20North%20Village%2C%20Main%20Road%2C%20Placencia%2C%20Belize"
     maps_photo_id: AAjk-CMBShSOEDVTN_G6bP1za1Fg3c5OkMV9NvxVpY4r9JCvfqqWT__v2CIC8QQV8bHMPxrlxw7f9KkBOpTgyogXibdHz2HpN42WzmLUOVKCPAcH84T7BR9UQ_ffmqkEgBrLELNB3yPN
@@ -435,6 +478,7 @@ photos:
   - id: placencia-sign-2
     title: "Placencia Sign"
     category: "Signs and Wonders"
+    place_type: "Tourist attraction"
     location: "GJFJ+VQF North Village, Main Road, Placencia, Belize"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Placencia%20Sign%20GJFJ%2BVQF%20North%20Village%2C%20Main%20Road%2C%20Placencia%2C%20Belize"
     maps_photo_id: AAjk-CNfi9T6inrngqMG3j2Bz23MZmKKD0Nu-q9MsWSgUjVJiuDQ9ymfcV3Jz52UZK0TYMy6N8vXOOhNZ3Z_ZHPY_liODjTQvEyhZOb-QRGClBsvKTUEAak_-ikUlgCtr6wdeTqvat4_
@@ -445,6 +489,7 @@ photos:
   - id: placencia-sda-church
     title: "Placencia SDA Church"
     category: "Travel Discoveries"
+    place_type: "Seventh-day Adventist church"
     location: "GJCJ+F35, Main St, Placencia, Belize"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Placencia%20SDA%20Church%20GJCJ%2BF35%2C%20Main%20St%2C%20Placencia%2C%20Belize"
     maps_photo_id: AAjk-CNINZ0Zo8On0B-xc6M4HdFCe-AhMuRKOS_St6-GlsDUlUUh_2ffz-mfkFPVFbcP1Fr4tpiueiRqHYa8Xm8JEdEIM2vXLdkdV8bDSxAKkhzq7-brXhFZ8QCNi4w9bHr3208ccAun
@@ -455,6 +500,7 @@ photos:
   - id: placencia-sda-church-2
     title: "Placencia SDA Church"
     category: "Travel Discoveries"
+    place_type: "Seventh-day Adventist church"
     location: "GJCJ+F35, Main St, Placencia, Belize"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Placencia%20SDA%20Church%20GJCJ%2BF35%2C%20Main%20St%2C%20Placencia%2C%20Belize"
     maps_photo_id: AAjk-COhc3ky0KmYifbiliCpJG_fyCTpiXyGy6EeTuCT6G-3PYt_ZC0ADcOr1HO0G73e7Goz18LVGEwNWEaW2prQLnFP235vmHvTrxb5j4iQfXGIrrXPo7bP3-yOgCOYNWJh92Bt7vg4kg
@@ -465,6 +511,7 @@ photos:
   - id: meme-s-place
     title: "MeMe's Place"
     category: "Travel Discoveries"
+    place_type: "Restaurant"
     location: "2494 MeMe's Place, Placencia Sidewalk, Placencia, Belize"
     maps_url: "https://www.google.com/maps/search/?api=1&query=MeMe's%20Place%202494%20MeMe's%20Place%2C%20Placencia%20Sidewalk%2C%20Placencia%2C%20Belize"
     maps_photo_id: AAjk-CParURNM9W77P1AetKcRWtTYyuOVw8Co9sfWHHWPpr_D-W2WPYL2kTqHHCYilN1zOrHmtuXksVEJOAEW1e9NDerKsFIbZqaDxoA-of0U-53LUPhwgKM-xhz_WWexGSlXV_oyomf
@@ -475,6 +522,7 @@ photos:
   - id: alejo-beni-park
     title: "Alejo Beni Park"
     category: "Travel Discoveries"
+    place_type: "Park"
     location: "XQ8J+68M, Sharp St, Dangriga, Belize"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Alejo%20Beni%20Park%20XQ8J%2B68M%2C%20Sharp%20St%2C%20Dangriga%2C%20Belize"
     maps_photo_id: AAjk-COmae8CvFt5OS9fzCUYK7J9gwpIFOLASNbzPXBww111unbaU2SVt0kBZt8UmitAD-Iy2d2CIlwcorZ8FoDvzPS3_61YNHGCIwADNK25JoDLVj9sOebeCGWiPR275-4pe9DI-dg
@@ -485,6 +533,7 @@ photos:
   - id: mexicana
     title: "Mexicana"
     category: "Travel Discoveries"
+    place_type: "Restaurant"
     location: "XPFG+W3M, Sarawina, Belize"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Mexicana%20XPFG%2BW3M%2C%20Sarawina%2C%20Belize"
     maps_photo_id: AAjk-CPx3JOLFBUbkvrI67RQX3HKBQAoUG_1vyhvXjDB_BM7dGgM5HGaU1TZ0q7E0Vs1QgvmISVR6VqErqsEXppXICi5yi6HSBRbTeTMa0Pzk-EIuqNNSDZzF5fLkxJrjB8KH2cyT6258g
@@ -495,6 +544,7 @@ photos:
   - id: mexicana-2
     title: "Mexicana"
     category: "Travel Discoveries"
+    place_type: "Restaurant"
     location: "XPFG+W3M, Sarawina, Belize"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Mexicana%20XPFG%2BW3M%2C%20Sarawina%2C%20Belize"
     maps_photo_id: AAjk-CM8XWIOVmGo_GSnUC2xKXgXf8FosZSw-LqLqVfsNI_5dEKWeRPR4s4PqdrjHFh4m_7O1rQJ2gy1FYgTuOU4Wi_fTAlcJBQi6TiGZkC_5Tpj8h-Uen6sobc7ft8okHbO1vQnc2s2-g
@@ -505,6 +555,7 @@ photos:
   - id: mexicana-3
     title: "Mexicana"
     category: "Travel Discoveries"
+    place_type: "Restaurant"
     location: "XPFG+W3M, Sarawina, Belize"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Mexicana%20XPFG%2BW3M%2C%20Sarawina%2C%20Belize"
     maps_photo_id: AAjk-CMzSd3OIgEUgZ0Z2CrMOcr4PB1yzYthRbd5DsVaf78ZJ8GpyBs6BkftAMjQ-_pwTTHCnA3pLQys6sku_y0PD6ha3juKfDw_jwVbzZSeZTHqWxzgi-ycd0Jad6ORfCjMFY2Hg2EZ
@@ -515,6 +566,7 @@ photos:
   - id: mexicana-4
     title: "Mexicana"
     category: "Travel Discoveries"
+    place_type: "Restaurant"
     location: "XPFG+W3M, Sarawina, Belize"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Mexicana%20XPFG%2BW3M%2C%20Sarawina%2C%20Belize"
     maps_photo_id: AAjk-COtwAyvyv8BtdEmvyTYAeGUfYITsceHBIV0kInupiypuqDcqnxsdv8rZJhku6bvXgIyLLhMHIaO-ZkxguuQzSQrxAEqHstNGO8zqkbgn9sHPns2VzjFe9-6qPRA2aI_0PICwDU
@@ -525,6 +577,7 @@ photos:
   - id: barber-sharps-s-shop
     title: "Barber Sharps's Shop"
     category: "Travel Discoveries"
+    place_type: "Barber shop"
     location: "Coastal Hwy, Belize"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Barber%20Sharps's%20Shop%20Coastal%20Hwy%2C%20Belize"
     maps_photo_id: AAjk-CMvEzGboDIrLA6ZQBKJd28JQzH8BFwSK3fr-ur7Wsdh4C-2awhxm0Um2nd7nuvqFTZZifRN8LD2C47ttuT0yFJrLPiyWM9BIx7Z2rVA0qQg8nbUiThtjw2QSzCLeNlw79KiGSAS
@@ -535,6 +588,7 @@ photos:
   - id: dangriga-post-office
     title: "Dangriga Post Office"
     category: "Travel Discoveries"
+    place_type: "Post office"
     location: "12 Ganey St, Dangriga, Belize"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Dangriga%20Post%20Office%2012%20Ganey%20St%2C%20Dangriga%2C%20Belize"
     maps_photo_id: AAjk-CN6APiDlIkCGnrwm_GQ2T4EsmIgo78mxaK6Qrstuh0YHTOxipmgXJXDs7mXirfcXNPtdD6K51U1Fa2lAlalNn_ifF5CS-uHrxgKtJ-5O0Sy63t8flKn07s3b31UiQV0mlXPcbY
@@ -545,6 +599,7 @@ photos:
   - id: dangriga-post-office-2
     title: "Dangriga Post Office"
     category: "Travel Discoveries"
+    place_type: "Post office"
     location: "12 Ganey St, Dangriga, Belize"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Dangriga%20Post%20Office%2012%20Ganey%20St%2C%20Dangriga%2C%20Belize"
     maps_photo_id: AAjk-CNuBcuuUGa-MxJkWmQ6yZrASCRUt5i2UiFh6HdwZWa2iWN2HhwIm8LYi1E0lWzOm4pMV58mX1IMpkJeF4b5YyD2CtPi6hUz0zVTWaj5sg212IslCIVm78u7r1KmvSE6GtRPUpwCXA
@@ -555,6 +610,7 @@ photos:
   - id: kfc
     title: "KFC"
     category: "Travel Discoveries"
+    place_type: "Fast food restaurant"
     location: "Edwards Berbice, West Coast D, Guyana"
     maps_url: "https://www.google.com/maps/search/?api=1&query=KFC%20Edwards%20Berbice%2C%20West%20Coast%20D%2C%20Guyana"
     maps_photo_id: AAjk-CMil9aclWY_LGSsJ2HR7BaYuhlaKBIOcST-HZcq-lLztHF72CpnYTP5kS9xPaHl3Nh_H3r25Mu6lrvXw_xx2FVoFnsHe88GD5ePuHcnVo0C-Yid6uttd0Cys6RA9hF6GL-hUigTobycazUn
@@ -565,6 +621,7 @@ photos:
   - id: kfc-2
     title: "KFC"
     category: "Travel Discoveries"
+    place_type: "Fast food restaurant"
     location: "Edwards Berbice, West Coast D, Guyana"
     maps_url: "https://www.google.com/maps/search/?api=1&query=KFC%20Edwards%20Berbice%2C%20West%20Coast%20D%2C%20Guyana"
     maps_photo_id: AAjk-CPZ_Iq63qVuOIyor-XqUVmEtOwQHvbiP_ijH5iTp5pkiaN0Se2nSvkUbNGnWcTFG6fNTOzMaQRXuyOyygH5W_0LfE_JCeGrGkRP6IiiF-GV_EEgT3CjwLT7IH-s9Hwk_NYbHJN5difmZ9wg
@@ -575,6 +632,7 @@ photos:
   - id: kfc-3
     title: "KFC"
     category: "Travel Discoveries"
+    place_type: "Fast food restaurant"
     location: "Edwards Berbice, West Coast D, Guyana"
     maps_url: "https://www.google.com/maps/search/?api=1&query=KFC%20Edwards%20Berbice%2C%20West%20Coast%20D%2C%20Guyana"
     maps_photo_id: AAjk-CM9Zd7hfqfN-3jw6yTfTCZrRLQ-PRbO8Ci3uEBmaisOtQU20-GPdBiiCC8E3AfxVsQ0Y-Vq2Ys1TtbCqvhSkG-9-t8hKyfejk_u_u77jlp7Ppi-Yp8bQm5K86LCGdEcWDlNJy3iwX5zRw
@@ -585,29 +643,164 @@ photos:
   - id: miami-international-airport
     title: "Miami International Airport"
     category: "Travel Discoveries"
+    place_type: "International airport"
     location: "2100 NW 42nd Ave, Miami, FL 33142"
     maps_url: "https://www.google.com/maps/search/?api=1&query=Miami%20International%20Airport%202100%20NW%2042nd%20Ave%2C%20Miami%2C%20FL%2033142"
     maps_photo_id: AAjk-CMSoVcwiDfSz0QdKGuVqxfzcXVzQgTXYDfus29TDlEwkNp09DjhDI_FEHvVlPo3Pffl0-8FwYbR1zG64YexGH99Cy_J3mguTFI43a6Ltjr5B8Od6ksJRtiCIJ3nlMIXkKJgRTbvA4a4Z8he
     image_path: "images/travel-discoveries/miami-international-airport.jpg"
-    caption: ""
-    related: []
-
-  - id: miami-international-airport-2
-    title: "Miami International Airport"
-    category: "Travel Discoveries"
-    location: "2100 NW 42nd Ave, Miami, FL 33142"
-    maps_url: "https://www.google.com/maps/search/?api=1&query=Miami%20International%20Airport%202100%20NW%2042nd%20Ave%2C%20Miami%2C%20FL%2033142"
-    maps_photo_id: AAjk-CNluomTedqlj3gxiclGWgEh-RztDK5LvMUTz11R5018PdK6I8C6rmLKrzBTyws6fwLDrXH8nV8lgp5nZTcQUb4ptKGDH8YjbsBRtkI95XEWuT2WEb6ISxocJ54r-yedBtcq1ooVHBA3t-P8
-    image_path: "images/travel-discoveries/miami-international-airport-2.jpg"
     caption: "MIA Today... Smart wheelchair facing off against a dumb golf cart 😄🤣😎"
     related: []
 
-  - id: friends-sculpture-3
-    title: "\"Friends\" Sculpture"
+  - id: cheddi-jagan-international-airport-cjia
+    title: "Cheddi Jagan International Airport (CJIA)"
+    category: "Travel Discoveries"
+    place_type: "International airport"
+    location: "GP3W+CX6, Timeri, Tmehri, Guyana"
+    maps_url: "https://www.google.com/maps/search/?api=1&query=Cheddi%20Jagan%20International%20Airport%20(CJIA)%20GP3W%2BCX6%2C%20Timeri%2C%20Tmehri%2C%20Guyana"
+    maps_photo_id: AAjk-CP2TFcHjNR56tDvnqKqLcSImyvQ00vjbWlKBQ2fmPQOWG0Bwx-zbNhkIqQt9iZJV1j-swHfhc1DIa5l8k9AaLh3r1adV2fudEL507RCPNwjYx9Ppjd4sgNh86fBfVnuZdIeruhX2nVGqjQ
+    image_path: "images/travel-discoveries/cheddi-jagan-international-airport-cjia.jpg"
+    caption: "Roraima Airways Executive Lounge"
+    related: []
+
+  - id: longview-beach
+    title: "Longview Beach"
+    category: "Travel Discoveries"
+    place_type: "Public beach"
+    location: "9035 Pittenger Rd, Grandview, MO 64030"
+    maps_url: "https://www.google.com/maps/search/?api=1&query=Longview%20Beach%209035%20Pittenger%20Rd%2C%20Grandview%2C%20MO%2064030"
+    maps_photo_id: AAjk-CMvTMDikWypnrazaoKJaemLHf4mh64jxt1lLftDd4EC7fje8q1cuPPXFpjDggnPzJ3tbwe4vusXpSbx4uGzmcqzFMEZIsB2En9hLGLCrfjczaSm9lE0FGOgJql3sfxgcVcpkfTZ
+    image_path: "images/travel-discoveries/longview-beach.jpg"
+    caption: "Spent race morning at Longview Lake for the Yeti Endurance Weekend — beautiful lake, plenty of room around the start on Raytown Road, and a well-organized day. Great spot for a run, and just as good for a walk by the water any other day. 😄🏃"
+    related: []
+
+  - id: longview-beach-2
+    title: "Longview Beach"
+    category: "Travel Discoveries"
+    place_type: "Public beach"
+    location: "9035 Pittenger Rd, Grandview, MO 64030"
+    maps_url: "https://www.google.com/maps/search/?api=1&query=Longview%20Beach%209035%20Pittenger%20Rd%2C%20Grandview%2C%20MO%2064030"
+    maps_photo_id: AAjk-CPhhBYDEHwceH7O4xtoaU6hH5c2N0VYnoobdoFVgIO8vXR_RyqW2d_IQQg2UOxTog_8B0yC5wgrWR9CUfBGFqjUQFkrmMwVXnAkAnnMEXhVNe0SVJm3VMn6490um5sSG2dKh8MM2Ta8ufTb
+    image_path: "images/travel-discoveries/longview-beach-2.jpg"
+    caption: "Spent race morning at Longview Lake for the Yeti Endurance Weekend — beautiful lake, plenty of room around the start on Raytown Road, and a well-organized day. Great spot for a run, and just as good for a walk by the water any other day. 😄🏃"
+    related: []
+
+  - id: tiny-door-atlanta-door-1
+    title: "Tiny Door Atlanta Door 1"
+    category: "Signs and Wonders"
+    place_type: "Tourist attraction"
+    location: "Atlanta, GA 30316"
+    maps_url: "https://www.google.com/maps/search/?api=1&query=Tiny%20Door%20Atlanta%20Door%201%20Atlanta%2C%20GA%2030316"
+    maps_photo_id: AAjk-CN5NbBlnD15C2jz5uAw3ByzCDPFrYnGR0H12cD9eXV6oPcqbYlaZjyZ3MUAzaam4JvnXx4NILufkwPAEVu7Ne_vSMfCQrObLJFt6vDIuUpHJDhs8c4Nj-hJQxx86VAYy786sC05PrFyM3k
+    image_path: "images/signs-and-wonders/tiny-door-atlanta-door-1.jpg"
+    caption: "Let's knock and see if anyone is home 🤔😄🚪"
+    related: []
+
+  - id: tiny-door-atlanta-door-1-2
+    title: "Tiny Door Atlanta Door 1"
+    category: "Signs and Wonders"
+    place_type: "Tourist attraction"
+    location: "Atlanta, GA 30316"
+    maps_url: "https://www.google.com/maps/search/?api=1&query=Tiny%20Door%20Atlanta%20Door%201%20Atlanta%2C%20GA%2030316"
+    maps_photo_id: AAjk-COy5BrYwJ2za1Sl_YPxBQiOju5gt96-uR2L3SNTsd8hoSCoigE4iknz5CQFK2A3-_TunvHMWEaTF-cHCtX3XVia5lqoFjBsQG7Zu3cjrVO6TrBIII0-EmHZ7ZUedQxvYNw7E8QLuoxLdIY
+    image_path: "images/signs-and-wonders/tiny-door-atlanta-door-1-2.jpg"
+    caption: "Let's knock and see if anyone is home 🤔😄🚪"
+    related: []
+
+  - id: the-mediator-sculpture
+    title: "\"The Mediator\" Sculpture"
     category: "Public Art & Sculptures"
-    location: "330 Town Center Ave, Suwanee, GA 30024"
-    maps_url: "https://www.google.com/maps/search/?api=1&query=%22Friends%22%20Sculpture%20330%20Town%20Center%20Ave%2C%20Suwanee%2C%20GA%2030024"
-    maps_photo_id: AAjk-COr8aJOBmhYGT4CjsD2pCBroJPmeUOz6rH-E1QH_8YdGaZHnGIbdQp6nhYhperHefCyben7TLn5okaWcgcE-oUnN3B0y1oQG7R0VcR07VWthtLTAFumZYn6WZ_W--RpDtBdQbFNflyI7nc
-    image_path: "images/public-art-sculptures/friends-sculpture-3.jpg"
-    caption: "Hanging with my friends in Suwanee"
+    place_type: "Sculpture"
+    location: "3928 Charleston Market St NW, Suwanee, GA 30024"
+    maps_url: "https://www.google.com/maps/search/?api=1&query=%22The%20Mediator%22%20Sculpture%203928%20Charleston%20Market%20St%20NW%2C%20Suwanee%2C%20GA%2030024"
+    maps_photo_id: AAjk-CO480JqZw8SHQn8bkqozZOyqDVebCAFvfhEXyZUQrxUiEAS2apBEiFWgEr5ar-PgVxBOnC5RxAhLW4jeadOzuuicnic58zlnRQdH53U7R9CozZ1JheHsHg7pCafudrAWzHRcQ17hz_dUhk5
+    image_path: "images/public-art-sculptures/the-mediator-sculpture.jpg"
+    caption: "Must stay flexible and keep it balanced ☯️😎👍🏿"
+    related: []
+
+  - id: the-mediator-sculpture-2
+    title: "\"The Mediator\" Sculpture"
+    category: "Public Art & Sculptures"
+    place_type: "Sculpture"
+    location: "3928 Charleston Market St NW, Suwanee, GA 30024"
+    maps_url: "https://www.google.com/maps/search/?api=1&query=%22The%20Mediator%22%20Sculpture%203928%20Charleston%20Market%20St%20NW%2C%20Suwanee%2C%20GA%2030024"
+    maps_photo_id: AAjk-CMGOjl-xZOxmRaQBvB44gJlp3YcNoWGZ9wewes10J0IjI2jWQZ5n2mpJ4AQR6k6LLnCi7pZ-fo9LFBKgNd92o3r5Uw2wdUUWMOgtBCwejJcZU9v-QYbYEgPYWCb2W0sD8kWBQ-m47Z5CY34
+    image_path: "images/public-art-sculptures/the-mediator-sculpture-2.jpg"
+    caption: "Must stay flexible and keep it balanced ☯️😎👍🏿"
+    related: []
+
+  - id: the-mediator-sculpture-3
+    title: "\"The Mediator\" Sculpture"
+    category: "Public Art & Sculptures"
+    place_type: "Sculpture"
+    location: "3928 Charleston Market St NW, Suwanee, GA 30024"
+    maps_url: "https://www.google.com/maps/search/?api=1&query=%22The%20Mediator%22%20Sculpture%203928%20Charleston%20Market%20St%20NW%2C%20Suwanee%2C%20GA%2030024"
+    maps_photo_id: AAjk-CPPrz_Mkb1u18awq52Y7EGTGK6s_OKY_MHpiYI1GVRN-rXXOu7HoaXEm7SWbzA2nmiCvDAU5frqoG0ur42BfBXGNEQleWv6O2W_QNo9B_aGtQ_zzoZ1gwdDkuSckXIReEHJ4VGgNdJELo8E
+    image_path: "images/public-art-sculptures/the-mediator-sculpture-3.jpg"
+    caption: "Must stay flexible and keep it balanced ☯️😎👍🏿"
+    related: []
+
+  - id: the-mediator-sculpture-4
+    title: "\"The Mediator\" Sculpture"
+    category: "Public Art & Sculptures"
+    place_type: "Sculpture"
+    location: "3928 Charleston Market St NW, Suwanee, GA 30024"
+    maps_url: "https://www.google.com/maps/search/?api=1&query=%22The%20Mediator%22%20Sculpture%203928%20Charleston%20Market%20St%20NW%2C%20Suwanee%2C%20GA%2030024"
+    maps_photo_id: AAjk-CM0Bk5KXjUh1eerkMTifrCFHCa1kekgIiALbK2GUK4Ta9gOFu114_Ws8Z36P_3BXeamYnfRNlMbBHDiMXOZsIQmtT3EinL1S3NA6PDjYQ-_0DOiVGq9WFlE4b0BbpKy0p8Zmku5BCw-RI0U
+    image_path: "images/public-art-sculptures/the-mediator-sculpture-4.jpg"
+    caption: "Must stay flexible and keep it balanced ☯️😎👍🏿"
+    related: []
+
+  - id: statue-of-william-penn
+    title: "Statue of William Penn"
+    category: "Public Art & Sculptures"
+    place_type: "Sculpture"
+    location: "Millennium Square, Bristol BS1 5DB, United Kingdom"
+    maps_url: "https://www.google.com/maps/search/?api=1&query=Statue%20of%20William%20Penn%20Millennium%20Square%2C%20Bristol%20BS1%205DB%2C%20United%20Kingdom"
+    maps_photo_id: AAjk-COp6wvlUMJm6zS9U2r-POu_bdDpHaGZ-LCHRXgW4VntCudbRB9BnQFRpxnjGIQS9Mbg4i-M2qDjfbRSUzUiGS7kEj81xfBcaUUVrQaa7fzo_vAPJLfh98gvjSGEQwrPtrkUACTxe5IS3xxE
+    image_path: "images/public-art-sculptures/statue-of-william-penn.jpg"
+    caption: "Hold on to that thought 📜😎👍🏿Kid-friendlinessGood for family"
+    related: []
+
+  - id: statue-of-william-tyndale
+    title: "Statue of William Tyndale"
+    category: "Public Art & Sculptures"
+    place_type: "Sculpture"
+    location: "Millennium Square, Bristol BS1 5DB, United Kingdom"
+    maps_url: "https://www.google.com/maps/search/?api=1&query=Statue%20of%20William%20Tyndale%20Millennium%20Square%2C%20Bristol%20BS1%205DB%2C%20United%20Kingdom"
+    maps_photo_id: AAjk-CPkc5lEaPCSM5lS4M0ibyDGVUCP5-LgPm1ti3Vm_RCVsX1tF53meh8XPrE7aM_vrD-OS_eu5mi56kQJ7cU2fljPY6qi9dD_RPKEH9QCgZPo_hvaLVB7K-IbUv-7hJphwjyrY1_723kH2ug
+    image_path: "images/public-art-sculptures/statue-of-william-tyndale.jpg"
+    caption: "Still writing.. are you almost done ✍️🤔😄 …Kid-friendlinessGood for fam… More"
+    related: []
+
+  - id: el-lector-de-carlos-cambronero
+    title: "\"El Lector\" de Carlos Cambronero"
+    category: "Public Art & Sculptures"
+    place_type: "Historical landmark"
+    location: "C. de San Justo, 5, Centro, 28005 Madrid, Spain"
+    maps_url: "https://www.google.com/maps/search/?api=1&query=%22El%20Lector%22%20de%20Carlos%20Cambronero%20C.%20de%20San%20Justo%2C%205%2C%20Centro%2C%2028005%20Madrid%2C%20Spain"
+    maps_photo_id: AAjk-CMWw939YT1LzhyD2Zu5N8aJauFWYTDh__Hdz1Ibu384-UqCYhBBmeIVNDPtq4KBlVZRp6c-hsTb-ADL18DBrCzOQfMWoW4-gDfPkGJyfHNEhr5gwVMzBnAagCcRgEGdlaYFGJJG0sGkJBIp
+    image_path: "images/public-art-sculptures/el-lector-de-carlos-cambronero.jpg"
+    caption: "Can you read me another story 📖😎🇪🇸"
+    related: []
+
+  - id: el-vecino-curioso
+    title: "El Vecino Curioso"
+    category: "Public Art & Sculptures"
+    place_type: "Sculpture"
+    location: "C. de la Almudena, 1, Centro, 28013 Madrid, Spain"
+    maps_url: "https://www.google.com/maps/search/?api=1&query=El%20Vecino%20Curioso%20C.%20de%20la%20Almudena%2C%201%2C%20Centro%2C%2028013%20Madrid%2C%20Spain"
+    maps_photo_id: AAjk-CMIVHynCGjCbJMDIqbhcfLdrIfd_nGua7iRWg2PSPZei0lb_ivaFuKWHVaCcQHsFQz2uson2IuN5ZEi_eAQkhFK7UmcD9PvzkAWmZRh11Y4LTtsR9KKCYiHeB6MiYvdoXI7V09bKSnMd-33
+    image_path: "images/public-art-sculptures/el-vecino-curioso.jpg"
+    caption: "Checking out the view below  😄👀🇪🇸"
+    related: []
+
+  - id: lenda-de-floripes
+    title: "Lenda de Floripes"
+    category: "Public Art & Sculptures"
+    place_type: "Historical landmark"
+    location: "Praça Patrão Joaquim Lopes 26, 8700-302 Olhão, Portugal"
+    maps_url: "https://www.google.com/maps/search/?api=1&query=Lenda%20de%20Floripes%20Pra%C3%A7a%20Patr%C3%A3o%20Joaquim%20Lopes%2026%2C%208700-302%20Olh%C3%A3o%2C%20Portugal"
+    maps_photo_id: AAjk-CNhAqJ6u3c5KtwfM4NsH9nr6oSNGlVvenTgci4eN_PWf2xRFIE1iARPP5y-64lvml6hlpxTioVJz4vsY4dDJXv6ON3XHVdmgoIlGFQxY9RwKrGGZwpw5Og0HoQfsI8txwgzjv2P4hxESS1N
+    image_path: "images/public-art-sculptures/lenda-de-floripes.jpg"
+    caption: "Made a new friend in the square. 😄🇵🇹Kid-friendlinessGood for family"
     related: []

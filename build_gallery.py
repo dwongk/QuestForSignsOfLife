@@ -190,9 +190,9 @@ def normalize_photo(photo: dict, root: Path) -> dict:
     category = str(photo.get("category") or "").strip()
     place_type = str(photo.get("place_type") or "").strip()
     if place_type:
-        category = category_from_place_type(place_type)
+        category = category_from_place_type(place_type, title)
     elif not category:
-        category = "Travel Discoveries"
+        category = category_from_place_type("", title)
     location = str(photo.get("location") or "").strip()
     maps_url = str(photo.get("maps_url") or "").strip()
     image_path = str(photo.get("image_path") or "").strip()
@@ -231,6 +231,7 @@ def normalize_photo(photo: dict, root: Path) -> dict:
         "id": pid,
         "title": title,
         "category": category,
+        "place_type": place_type,
         "location": location,
         "maps_url": maps_url,
         "image_path": image_path,
@@ -263,15 +264,16 @@ def location_sort_key(location: str) -> str:
     return f"{last}|{postal}|{second_last}".lower()
 
 
-_SCULPTURE_TYPES = {"sculpture", "monument", "historical landmark", "mural", "memorial"}
+_SCULPTURE_TYPES = {"sculpture", "monument", "historical landmark", "mural", "memorial", "statue"}
 _TOURIST_TYPES = {"tourist attraction", "point of interest"}
 
 
-def category_from_place_type(place_type: str) -> str:
+def category_from_place_type(place_type: str, title: str = "") -> str:
     pt = (place_type or "").lower()
-    if any(t in pt for t in _SCULPTURE_TYPES):
+    t = (title or "").lower()
+    if any(k in pt for k in _SCULPTURE_TYPES) or any(k in t for k in ("sculpture", "statue", "monument", "memorial", "mural", "obra", "el lector", "el vecino", "lenda")):
         return "Public Art & Sculptures"
-    if any(t in pt for t in _TOURIST_TYPES):
+    if any(k in pt for k in _TOURIST_TYPES) or any(k in t for k in ("sign", "letras", "i love", "faro", "tiny door")):
         return "Signs and Wonders"
     return "Travel Discoveries"
 

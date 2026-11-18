@@ -192,6 +192,8 @@ def photo_to_yaml(photo: dict) -> str:
     lines = [f"  - id: {photo['id']}"]
     lines.append(f"    title: {_ys(photo.get('title', 'Untitled'))}")
     lines.append(f"    category: {_ys(photo.get('category', 'Uncategorized'))}")
+    if photo.get("place_type"):
+        lines.append(f"    place_type: {_ys(photo['place_type'])}")
     if photo.get("location"):
         lines.append(f"    location: {_ys(photo['location'])}")
     if photo.get("maps_url"):
@@ -258,7 +260,11 @@ def _apply_update(target: dict, inc: dict):
         target["maps_url"] = inc["maps_url"]
     if inc.get("category"):
         target["category"] = inc["category"]
-    target["caption"] = inc.get("caption", "")
+    if inc.get("place_type"):
+        target["place_type"] = inc["place_type"]
+    # Only update caption if the incoming entry has a non-empty caption
+    if inc.get("caption"):
+        target["caption"] = inc["caption"]
     if inc.get("related") and not target.get("related"):
         target["related"] = inc["related"]
     # Persist CDN ID on target so future syncs can match even after local download
@@ -371,6 +377,7 @@ def append_photos(new_photos: list[dict]):
 
 def cmd_build(args):
     """Rebuild index.html."""
+    auto_deduplicate(silent=True)
     build_gallery.main()
 
 
@@ -616,13 +623,8 @@ def sanitize_harvested_items(items: list, default_cat: str) -> list:
             elif "Local Guide" in title:
                 title = "Photo Discovery"
 
-        t = title.lower()
-        if any(w in t for w in ["sign", "letras", "i love", "faro"]):
-            category = "Signs and Wonders"
-        elif any(w in t for w in ["sculpture", "statue", "monument", "memorial", "mural", "obra"]):
-            category = "Public Art & Sculptures"
-        else:
-            category = it.get("category") or "Travel Discoveries"
+        place_type = str(it.get("place_type") or "").strip()
+        category = build_gallery.category_from_place_type(place_type, title)
 
         maps_url = it.get("maps_url") or ""
         if (not maps_url or "contrib" in maps_url) and title and title != "Photo Discovery":
@@ -630,6 +632,7 @@ def sanitize_harvested_items(items: list, default_cat: str) -> list:
 
         clean.append({
             "title": _clean_str(title or "Photo Discovery"),
+            "place_type": _clean_str(place_type),
             "location": _clean_str(location),
             "caption": _clean_str(str(it.get("caption") or "").strip()),
             "image_url": _clean_str(u),
@@ -661,6 +664,7 @@ def _import_maps_file(json_path: Path, default_cat: str = "Public Art & Sculptur
         location = it.get("location") or ""
         caption = it.get("caption") or ""
         category = it.get("category") or default_cat
+        place_type = it.get("place_type") or ""
 
         if not img_url:
             continue
@@ -669,6 +673,7 @@ def _import_maps_file(json_path: Path, default_cat: str = "Public Art & Sculptur
             "id": slug_id,
             "title": title,
             "category": category,
+            "place_type": place_type,
             "location": location,
             "maps_url": maps_url,
             "image_path": img_url,
@@ -688,6 +693,7 @@ def cmd_import_maps(args):
         return
 
     if _import_maps_file(json_path, args.category or "Public Art & Sculptures"):
+        auto_deduplicate(silent=False)
         build_gallery.main()
 
 
@@ -1033,65 +1039,84 @@ def cmd_sync(args):
     print("\n=== Step 3: Downloading remote images ===")
     _download_remote_images()
 
-    print("\n=== Step 4: Rebuilding gallery ===")
+    print("\n=== Step 4: Filtering duplicates ===")
+    auto_deduplicate(silent=False)
+
+    print("\n=== Step 5: Rebuilding gallery ===")
     build_gallery.main()
     print("\nSync complete.")
 
 
-def cmd_deduplicate(args):
-    """Remove entries whose image files are byte-for-byte identical to an earlier entry."""
+def auto_deduplicate(photos: list = None, silent: bool = False) -> int:
+    """Automatically find and remove duplicate entries that match on image, place, and caption."""
     import hashlib
 
-    photos = build_gallery.load_photos(ROOT)
-    hash_to_first: dict = {}
+    if photos is None:
+        photos = build_gallery.load_photos(ROOT)
+
+    hash_to_first = {}
     to_remove = []
 
     for p in photos:
         img_rel = p.get("image_path", "")
-        if build_gallery.is_remote_url(img_rel):
+        img_id = ""
+        if not build_gallery.is_remote_url(img_rel):
+            img_path = ROOT / img_rel
+            if img_path.is_file():
+                img_id = hashlib.md5(img_path.read_bytes()).hexdigest()
+        if not img_id:
+            img_id = p.get("maps_photo_id") or _cdn_photo_id(img_rel) or img_rel.strip().lower()
+
+        if not img_id:
             continue
-        img_path = ROOT / img_rel
-        if not img_path.is_file():
-            continue
-        digest = hashlib.md5(img_path.read_bytes()).hexdigest()
-        # Key on (hash, title, location) so the same image at a different
-        # place/title is treated as intentional reuse, not a duplicate.
-        dedup_key = (digest, _norm_title_key(p.get("title", "")), _norm_loc_key(p.get("location", "")))
+
+        caption_key = (p.get("caption") or "").strip().lower()
+        dedup_key = (
+            img_id,
+            _norm_title_key(p.get("title", "")),
+            _norm_loc_key(p.get("location", "")),
+            caption_key,
+        )
+
         if dedup_key in hash_to_first:
             original = hash_to_first[dedup_key]
-            print(f"  duplicate: {p['id']}  ==  {original['id']}")
+            if not silent:
+                print(f"  Auto-filtered duplicate: {p['id']} (identical to {original['id']})")
             to_remove.append(p)
         else:
             hash_to_first[dedup_key] = p
 
     if not to_remove:
-        print("No duplicate image files found.")
-        return
-
-    print(f"\n{len(to_remove)} duplicate entries found.")
-    if args.dry_run:
-        print("Dry run — no changes made. Re-run without --dry-run to apply.")
-        return
-
-    if not args.yes:
-        confirm = input(f"Delete {len(to_remove)} entries and their image files? [y/N]: ").strip().lower()
-        if confirm != "y":
-            print("Aborted.")
-            return
+        return 0
 
     remove_ids = {p["id"] for p in to_remove}
+    remaining_paths = {p2.get("image_path") for p2 in photos if p2["id"] not in remove_ids}
     for p in to_remove:
         img_path = ROOT / p.get("image_path", "")
-        if img_path.is_file():
-            img_path.unlink()
-            print(f"  deleted {img_path.relative_to(ROOT)}")
+        if img_path.is_file() and p.get("image_path") not in remaining_paths:
+            try:
+                img_path.unlink()
+                if not silent:
+                    print(f"  deleted {img_path.relative_to(ROOT)}")
+            except Exception:
+                pass
 
     kept = [p for p in photos if p["id"] not in remove_ids]
     content = "# Photography Discoveries Catalog\n# Curated from Google Maps Local Guide contributions\n\nphotos:\n"
     content += "\n\n".join(photo_to_yaml(p) for p in kept) + "\n"
     DATA_FILE.write_text(content, encoding="utf-8")
-    print(f"\nRemoved {len(to_remove)} entries ({len(kept)} remaining).")
-    build_gallery.main()
+    if not silent:
+        print(f"Removed {len(to_remove)} duplicate(s) ({len(kept)} remaining).")
+    return len(to_remove)
+
+
+def cmd_deduplicate(args):
+    """Remove entries whose image files, place, and caption are identical duplicates."""
+    count = auto_deduplicate(silent=False)
+    if count == 0:
+        print("No duplicate entries found.")
+    else:
+        build_gallery.main()
 
 
 def cmd_harvest_guide(args):
