@@ -1,43 +1,159 @@
-# Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages
+name: Review and deploy gallery
 
 on:
-  # Runs on pushes targeting the default branch
-  push:
-    branches: ["main"]
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
-  pages: write
-  id-token: write
+  deployments: read
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
   group: "pages"
   cancel-in-progress: false
 
 jobs:
-  # Single deploy job since we're just deploying
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  review:
     runs-on: ubuntu-latest
+    outputs:
+      site_changed: ${{ steps.compare.outputs.changed }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Set up Python
+        id: setup
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Run regression tests
+        id: tests
+        run: python3 -m unittest discover -s tests -v
+      - name: Build gallery
+        if: always() && steps.setup.outcome == 'success'
+        id: build
+        run: |
+          python3 build_gallery.py
+          mkdir -p _site
+          cp index.html styles.css _site/
+          cp -R images _site/images
+      - name: Select published-site baseline
+        if: always() && steps.build.outcome == 'success'
+        id: baseline
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          mkdir -p _baseline
+          base_sha=""
+
+          while IFS="$(printf '\t')" read -r deployment_id deployment_sha; do
+            [ -n "$deployment_id" ] || continue
+            status="$(gh api "repos/$REPOSITORY/deployments/$deployment_id/statuses?per_page=1" --jq '.[0].state // empty')"
+            if [ "$status" = "success" ]; then
+              base_sha="$deployment_sha"
+              break
+            fi
+          done < <(gh api "repos/$REPOSITORY/deployments?environment=github-pages&per_page=100" --jq '.[] | [.id, .sha] | @tsv')
+
+          if [ -n "$base_sha" ]; then
+            git fetch --no-tags --depth=1 origin "$base_sha"
+            git archive FETCH_HEAD index.html styles.css images | tar -x -C _baseline
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "sha=$base_sha" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "sha=" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Compare generated site with published-site source
+        if: always() && steps.build.outcome == 'success' && steps.baseline.outcome == 'success'
+        id: compare
+        env:
+          BASELINE_EXISTS: ${{ steps.baseline.outputs.exists }}
+        run: |
+          if [ "$BASELINE_EXISTS" = "true" ]; then
+            python3 tools/compare_site.py --baseline _baseline --generated _site
+          else
+            python3 tools/compare_site.py --generated _site
+          fi
+      - name: Upload generated-site preview
+        if: always() && steps.build.outcome == 'success'
+        id: preview
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-gallery-preview
+          path: _site/
+          if-no-files-found: error
+          retention-days: 7
+      - name: Summarize run
+        if: always()
+        env:
+          TESTS_RESULT: ${{ steps.tests.outcome }}
+          BUILD_RESULT: ${{ steps.build.outcome }}
+          COMPARE_RESULT: ${{ steps.compare.outcome }}
+          PREVIEW_RESULT: ${{ steps.preview.outcome }}
+          SITE_CHANGED: ${{ steps.compare.outputs.changed }}
+          BASELINE_SHA: ${{ steps.baseline.outputs.sha }}
+          BASELINE_RESULT: ${{ steps.baseline.outcome }}
+        run: |
+          {
+            echo
+            echo "### Workflow result"
+            echo
+            echo "| Stage | Result |"
+            echo "| --- | --- |"
+            echo "| Regression tests | ${TESTS_RESULT:-not run} |"
+            echo "| Site build | ${BUILD_RESULT:-not run} |"
+            echo "| Site comparison | ${COMPARE_RESULT:-not run} |"
+            echo "| Published baseline | ${BASELINE_SHA:-not found} |"
+            echo "| Preview artifact | ${PREVIEW_RESULT:-not created} |"
+            echo
+            if [ "$BUILD_RESULT" != "success" ] || [ "$BASELINE_RESULT" = "failure" ] || [ "$COMPARE_RESULT" != "success" ]; then
+              echo "The generated site could not be fully reviewed; publishing is blocked."
+            elif [ "$SITE_CHANGED" = "true" ]; then
+              echo "The generated website differs from its published-site baseline. Review the comparison above and the generated-site preview artifact."
+            else
+              echo "The generated website is unchanged. Publishing will be skipped."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  deploy:
+    if: needs.review.result == 'success' && needs.review.outputs.site_changed == 'true'
+    needs: review
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Download reviewed site preview
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-gallery-preview
+          path: _site
       - name: Setup Pages
         uses: actions/configure-pages@v5
-      - name: Upload artifact
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository
-          path: '.'
+          path: _site
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
+      - name: Summarize deployment
+        if: always()
+        env:
+          DEPLOY_RESULT: ${{ steps.deployment.outcome }}
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          {
+            echo
+            echo "### Website deployment"
+            echo
+            echo "Result: ${DEPLOY_RESULT:-not completed}"
+            if [ -n "$PAGE_URL" ]; then
+              echo
+              echo "Published site: $PAGE_URL"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

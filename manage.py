@@ -315,6 +315,8 @@ def upsert_photos(incoming_photos: list[dict]):
             inc["id"] = pid
             existing_ids.add(pid)
             merged.append(inc)
+            if fp:
+                existing_by_fp[fp] = inc
             added_count += 1
 
     content = "# Photography Discoveries Catalog\n# Curated from Google Maps Local Guide contributions\n\nphotos:\n"
@@ -657,7 +659,7 @@ def cmd_import_maps(args):
 
 
 def _download_remote_images() -> int:
-    """Download all remote CDN images to local disk and update catalog. Returns count downloaded."""
+    """Download remote images, reusing local files for known Google photo IDs."""
     photos = build_gallery.load_photos(ROOT)
     remote_photos = [p for p in photos if build_gallery.is_remote_url(p.get("image_path", ""))]
 
@@ -668,25 +670,52 @@ def _download_remote_images() -> int:
     print(f"Downloading {len(remote_photos)} remote image(s) to local storage...")
     content = DATA_FILE.read_text(encoding="utf-8")
     downloaded = 0
+    local_by_fingerprint = {}
+    url_to_local = {}
+
+    for photo in photos:
+        image_path = photo.get("image_path", "")
+        if not image_path or build_gallery.is_remote_url(image_path):
+            continue
+        local_path = ROOT / image_path
+        fingerprint = get_photo_fingerprint(photo)
+        if fingerprint and local_path.is_file():
+            local_by_fingerprint.setdefault(fingerprint, image_path)
 
     for p in remote_photos:
         url = p["image_path"]
+        fingerprint = get_photo_fingerprint(p)
+        if fingerprint in local_by_fingerprint:
+            url_to_local[url] = local_by_fingerprint[fingerprint]
+            continue
+
         cat_slug = build_gallery.slugify(p.get("category", "uncategorized"))
         target_dir = IMAGES_DIR / cat_slug
         target_dir.mkdir(parents=True, exist_ok=True)
         dest_filename = f"{p['id']}.jpg"
         dest_path = target_dir / dest_filename
+        local_rel = f"images/{cat_slug}/{dest_filename}"
 
         try:
+            if dest_path.is_file() and dest_path.stat().st_size:
+                url_to_local[url] = local_rel
+                if fingerprint:
+                    local_by_fingerprint[fingerprint] = local_rel
+                continue
+
             print(f" Downloading {p['title']} -> {dest_path.relative_to(ROOT)}...")
             req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
             with urllib.request.urlopen(req, timeout=10) as resp:
                 dest_path.write_bytes(resp.read())
-            local_rel = f"images/{cat_slug}/{dest_filename}"
-            content = content.replace(f'"{url}"', f'"{local_rel}"').replace(url, local_rel)
+            url_to_local[url] = local_rel
+            if fingerprint:
+                local_by_fingerprint[fingerprint] = local_rel
             downloaded += 1
         except Exception as e:
             print(f"  Warning: failed to download {url}: {e}")
+
+    for url, local_rel in url_to_local.items():
+        content = content.replace(f'"{url}"', f'"{local_rel}"').replace(url, local_rel)
 
     DATA_FILE.write_text(content, encoding="utf-8")
     print(f"Catalog updated with local image paths ({downloaded} downloaded).")

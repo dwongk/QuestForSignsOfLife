@@ -329,6 +329,11 @@ def main():
 
             loc_html = f'<p class="location">{esc(photo["location"])}</p>' if photo["location"] else ""
             cap_html = f'<p class="caption">{esc(photo["caption"])}</p>' if photo["caption"] else ""
+            card_details = "\n".join(
+                f"    {content}"
+                for content in (loc_html, cap_html, map_link, related_html)
+                if content
+            )
 
             data_loc = esc(photo["location"].lower())
             data_title = esc(photo["title"].lower())
@@ -343,10 +348,7 @@ def main():
                 f'  {img_tag}\n'
                 f'  <div class="card-body">\n'
                 f'    <h3>{esc(photo["title"])}</h3>\n'
-                f'    {loc_html}\n'
-                f'    {cap_html}\n'
-                f'    {map_link}\n'
-                f'    {related_html}\n'
+                f'{card_details}\n'
                 f'  </div>\n'
                 f'</article>'
             )
@@ -464,7 +466,7 @@ def main():
 </script>"""
 
     bio = "Seeking signs. Striking poses. Collecting stories. 🌍📸 I take landmarks personally, statues figuratively, and scenic routes seriously. Just following the signs wherever they lead."
-    avatar_url = "https://lh3.googleusercontent.com/a-/ALV-UjVYVIkcfhjpvwHBjh4CRCGBfYFcAwky-aN633ZvB7PXFvePnV8=s96-c"
+    avatar_url = "images/profile-avatar.png"
     profile_url = "https://maps.app.goo.gl/fho6S7iKjvquva9W6"
 
     page = f"""<!doctype html>

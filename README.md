@@ -35,7 +35,7 @@ Before syncing, you need a `maps_contributions.json` file from your Google Maps 
 4. Click the bookmarklet — it scrolls the page, collects all photo URLs with titles and locations, and auto-downloads `maps_contributions.json`
 5. Run `sync` (see above)
 
-Existing entries are matched by photo fingerprint and updated in place — **no duplicates are ever created** on re-runs.
+Existing entries are matched by the stable Google photo ID and updated in place. The same ID is used to reuse a local image instead of downloading it again, and repeated records in one harvest are merged before download. Byte-identical images with different Google IDs can only be recognized after their bytes are available; the sync deduplicator then removes entries that also match on title, location, and caption.
 
 ---
 
@@ -107,11 +107,21 @@ Photos are organized into three distinct collections based on the following crit
 
 ---
 
-## 🌐 Publish on GitHub Pages
+## 🌐 Refresh, review, and publish
 
-1. Push your repository to GitHub
-2. Go to **Settings → Pages** and set source to **Deploy from branch `main`**
-3. Your portfolio is live at `https://<you>.github.io/<repo>/`
+The GitHub Action is **manual only** (`workflow_dispatch`); pushes and pull requests never trigger a build or deployment.
+
+1. Harvest the latest Google Maps photos and reviews using the bookmarklet in `tools/harvest_google_maps.html`.
+2. Run `python3 manage.py sync ~/Downloads/maps_contributions.json`. This imports and merges entries, downloads only images not already available locally, deduplicates matching photos, and rebuilds `index.html`.
+3. Review the generated page locally, then commit the updated `data/photos.yaml` and `images/` to `main`. The Action will not run for that commit.
+4. In GitHub, open **Actions → Review and deploy gallery → Run workflow** and manually start it on `main`.
+5. Review the run summary and the `generated-gallery-preview` artifact. If the generated site differs from the last successful Pages deployment, approve the `github-pages` deployment to publish it. If there are no site differences, publishing is skipped.
+
+The comparison uses the latest successful GitHub Pages deployment as its baseline, not the current commit. It reports added, removed, and changed site files plus an HTML diff; expected site changes do not fail validation. Failed runs include a stage-by-stage summary. The workflow never accesses Google Maps or downloads photos; harvesting and incremental image downloads happen locally in `sync`. The `github-pages` environment requires review from `@dwongk` and allows deployments from `main`; this gates publishing the generated site only, not code review.
+
+GitHub Pages is configured to deploy through **GitHub Actions**. The portfolio is published at `https://dwongk.github.io/QuestForSignsOfLife/`.
+
+The profile image is stored locally at `images/profile-avatar.png` so the Google-hosted profile image cannot change the site without a reviewed repository change.
 
 ---
 
