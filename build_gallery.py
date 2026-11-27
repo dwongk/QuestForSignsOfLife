@@ -505,7 +505,7 @@ def main():
 </div>
 <nav class="collection-nav" aria-label="Photo collections">{nav}</nav>
 <main>{"".join(sections)}</main>
-<footer><p>Photos and captions are curated for this portfolio. Location links open Google Maps.</p></footer>
+<footer><p>Photos and captions are curated for this portfolio. Location links open Google Maps. <a href="https://github.com/dwongk/dwongk.github.io/discussions">Leave feedback</a>.</p></footer>
 {lightbox_html}
 {sort_js}
 {lightbox_js}
